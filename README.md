@@ -57,7 +57,7 @@ Daylily is a framework for setting up ephemeral AWS clusters optimized for genom
     - [Install DAYCLI Environment](#install-daycli-environment)
 - [Ephemeral Cluster Creation](#ephemeral-cluster-creation)
   - [daylily-references-public Reference Bucket](#daylily-references-public-reference-bucket)
-    - [Clone `daylily-references-public` to YOURPREFIX-omics-analysis-REGION](#clone-daylily-references-public-to-yourprefix-omics-analysis-region)
+    - [Clone `daylily-omics-analysis-references-public` to YOURPREFIX-omics-analysis-REGION](#clone-daylily-omics-analysis-references-public-to-yourprefix-omics-analysis-region)
   - [Generate Analysis Cost Estimates per Availability Zone](#generate-analysis-cost-estimates-per-availability-zone)
   - [Create An Ephemeral Cluster](#create-an-ephemeral-cluster)
     - [Run Remote Slurm Tests On Headnode](#run-remote-slurm-tests-on-headnode)
@@ -492,7 +492,7 @@ region = <REGION>
 ### Clone stable release of `daylily` Git Repository
 
 ```bash
-git clone -b $(yq -r '.daylily.git_tag' "config/daylily/daylily_cli_global.yaml") https://github.com/Daylily-Informatics/daylily.git  # or, if you have set ssh keys with github and intend to make changes:  git clone git@github.com:Daylily-Informatics/daylily.git
+git clone -b $(yq -r '.daylily.git_tag' "config/daylily/daylily_cli_global.yaml") https://github.com/Daylily-Informatics/daylily-omics-analysis.git  # or, if you have set ssh keys with github and intend to make changes:  git clone git@github.com:Daylily-Informatics/daylily.git
 cd daylily
 ```
 
@@ -548,7 +548,7 @@ colr  'did it work?' 0,100,255 255,100,0
 - This will cost you ~$23 to clone w/in `us-west-2`, up to $110 across regions. _(one time, per region, cost)_ 
 - The bust will cost ~$14.50/mo to keep hot in `us-west-2`. It is not advised, but you may opt to remove unused reference data to reduce the monthly cost footprint by up to 65%. _(monthly ongoing cost)_
 
-### Clone `daylily-references-public` to YOURPREFIX-omics-analysis-REGION
+### Clone `daylily-omics-analysis-references-public` to YOURPREFIX-omics-analysis-REGION
 
 _from your local machine, in the daylily git repo root_
 
@@ -1096,13 +1096,14 @@ day-clone --help
 day-clone -d first_analysis
 echo "TO MOVE TO YOUR NEW ANALYSIS DIRECTORY, run:"
 echo  "        bash"
-echo  "        cd /fsx/analysis_results//ubuntu/07194a/daylily"
+echo  "        cd /fsx/analysis_results/ubuntu/fist_analysis/daylily"
 
 # move to your new analysis dir
 bash
-cd /fsx/analysis_results//ubuntu/07194a/daylily
+cd /fsx/analysis_results/ubuntu/first_analysis/daylily
 
 ```
+  > *note*: if you have an active DAY conda env, begina fresh bash shell from your new analysis dir, `bash`.
 
 #### Next, init daylily and, set genome, stage an analysis_manigest.csv and run a test workflow.
 

@@ -249,8 +249,8 @@ rule help:
         {params.c} '/-----------------------------------------------------------------------------' "$DY_IT1" "$DY_IB1" "$DY_IS1" 1>&2;
         {params.c} 'Welcome to daylily. 
 
-        More complete docs can be found here: 
-              https://github.com/Daylily-Informatics/daylily 
+        Complete docs can be found here: 
+              https://github.com/Daylily-Informatics/daylily-omics-analysis and  https://github.com/Daylily-Informatics/daylily-ephemeral-cluster
      
 
         ========================================================================
