@@ -1,3 +1,5 @@
+MIGRATING THE ANALYSIS SPECIFIC BITS FROM 'daylily' here, and the AWS infra stuff to `daylily-ephemeral-cluster`
+
 # Daylily AWS Ephemeral Cluster Setup
 _(stable tagged release to use --> 0.7.196t ... use main at own risk)_
 
