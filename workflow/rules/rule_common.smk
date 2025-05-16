@@ -655,7 +655,7 @@ def get_subsample_head_tail(sample_id):
                     "ERROR:::: NO SUBSAMPLING WILL BE EXECUTED::: you must specify a float from 0.0-1.0"
                 )
             else:
-                ss_head = f" <( seqkit sample --line-width=0 --quiet --rand-seed=7  --seq-type=dna --proportion={ss_pct_float}  "
+                ss_head = f" <( seqkit sample -j 16 --line-width=0 --quiet --rand-seed=7  --seq-type=dna --proportion={ss_pct_float}  "
                 ss_tail = " ) "
 
     except Exception as e:
