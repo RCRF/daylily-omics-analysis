@@ -304,13 +304,16 @@ df['Youdens_J_Index'] = [row['Sensitivity-Recall'] + row['Specificity'] - 1 if (
 # Matthews Correlation Coefficient (MCC)
 df['MCC'] = [calc_mcc(row['TP'], row['TN'], row['FP'], row['FN']) for idx, row in df.iterrows()]
 
+
+print_cols = ['mqc_id','Sample','TgtRegionSize','TN','FN','TP','FP','Fscore','Sensitivity-Recall','Specificity', 'FDR', 'PPV', 'Precision','AltId', 'CmpFootprint', 'AllVarMeanDP', 'CovBin', 'Aligner','SNVCaller']
+
 # Update columns to include new calculations
 print_cols.extend(['Fbeta_1',
                    'Fbeta_recall_1.5', 'Fbeta_recall_2.0', 'Fbeta_recall_4.0',
                    'Fbeta_precision_1.5', 'Fbeta_precision_2.0', 'Fbeta_precision_4.0',
                    'Youdens_J_Index', 'MCC'])
 
-print_cols = ['mqc_id','Sample','TgtRegionSize','TN','FN','TP','FP','Fscore','Sensitivity-Recall','Specificity', 'FDR', 'PPV', 'Precision','AltId', 'CmpFootprint', 'AllVarMeanDP', 'CovBin', 'Aligner','SNVCaller']
+
 df.to_csv(even_newer_summary, sep="\t", columns=print_cols)
 
 os.system(f"perl -pi -e 's/^\t/SNPClass\t/g;' {even_newer_summary}")

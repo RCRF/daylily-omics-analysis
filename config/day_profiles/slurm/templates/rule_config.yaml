@@ -536,7 +536,7 @@ qualimap:
     partition: "i192,i192mem,i128"
 
 rtg_vcfeval:
-    threads: 96
+    threads: 48
     env_yaml: "../envs/rtgtools_v0.1.yaml"
     ld_preload: " "
     partition: "i192,i192mem,i128"
