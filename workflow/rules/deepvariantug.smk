@@ -57,9 +57,9 @@ rule deepvariant_ultima_make_examples:
         crai=MDIR + "{sample}/align/{alnr}/{sample}.{alnr}.cram.crai",
         d=MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.ready",
     output:
-        MDIR + f"{wildcards.sample}/align/{wildcards.alnr}/snv/deepug/examples/{wildcards.dvchrm}{wildcards.sample}.{wildcards.alnr}.{wildcards.dvchrm}.tfrecord@{shard_count}.gz"
+        MDIR + "{wildcards.sample}/align/{wildcards.alnr}/snv/deepug/examples/{wildcards.dvchrm}{wildcards.sample}.{wildcards.alnr}.{wildcards.dvchrm}.tfrecord@{threads}.gz"
     log:
-        MDIR + f"{wildcards.sample}/align/{wildcards.alnr}/snv/deepug/log/{wildcards.sample}.{wildcards.alnr}.make_examples.{wildcards.dvchrm}.{shard_count}.log"
+        MDIR + "{wildcards.sample}/align/{wildcards.alnr}/snv/deepug/log/{wildcards.sample}.{wildcards.alnr}.make_examples.{wildcards.dvchrm}.{threads}.log"
     threads: config['deepvariant']['threads']
     container:
         "docker://ultimagenomics/make_examples"
@@ -70,7 +70,7 @@ rule deepvariant_ultima_make_examples:
         partition=config['deepvariant']['partition'],
         mem_mb=config['deepvariant']['mem_mb'],
     benchmark:
-        MDIR + f"{wildcards.sample}/benchmarks/{wildcards.sample}.{wildcards.alnr}.deepug.{wildcards.dvchrm}.{threads}.bench.tsv"
+        MDIR + "{wildcards.sample}/benchmarks/{wildcards.sample}.{wildcards.alnr}.deepug.{wildcards.dvchrm}.{threads}.bench.tsv"
     params:
         dchrm=get_dvchrm_day,
         deep_model="ULTIMA_WGS",
@@ -126,7 +126,7 @@ rule deepvariant_ultima_make_examples:
 
 rule deepvariant_ultima_call_variants:
     input:
-        examples=        MDIR + f"{wildcards.sample}/align/{wildcards.alnr}/snv/deepug/examples/{wildcards.dvchrm}{wildcards.sample}.{wildcards.alnr}.{wildcards.dvchrm}.tfrecord@{shard_count}.gz"
+        examples=MDIR + "{wildcards.sample}/align/{wildcards.alnr}/snv/deepug/examples/{wildcards.dvchrm}{wildcards.sample}.{wildcards.alnr}.{wildcards.dvchrm}.tfrecord@{threads}.gz"
     output:
         vcf=MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.deepug.{dvchrm}.snv.vcf.gz",
         #tvcf=temp(MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.deepug.{dvchrm}.snv.tmp.vcf"),
