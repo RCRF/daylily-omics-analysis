@@ -158,7 +158,7 @@ else:
             ulimit -n 65536 || echo "ulimit mod failed";
 
 
-            samtools fastq -n -T {params.huref} -@ {params.sort_threads} -o -  {input.cram} \
+            samtools fastq -n --reference {params.huref} -@ {params.sort_threads} -s -  {input.cram} \
             {params.mbuffer} | {params.strobe_cmd} \
             -t {params.strobe_threads} {params.strobe_opts} \
             --rg-id="{params.cluster_sample}-$epocsec" \
