@@ -168,7 +168,7 @@ else:
             --rg=PU:"{params.rgpu}" \
             --rg=CN:"{params.rgcn}" \
             --rg=PG:"{params.rgpg}" \
-            --use-index {params.huref}  {params.mbuffer} \
+            --use-index {params.huref} -  {params.mbuffer} \
             |  samtools sort \
             -l 1  \
             -m {params.sort_thread_mem}   \
