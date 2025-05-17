@@ -418,6 +418,7 @@ def get_ultima_cramsx(wildcards):
     crai=f"{cram}.crai"
     cram_aligner=samples[samples['sample_lane'] == wildcards.sample]['ultima_cram_aligner'][0]
     if cram_aligner in ['na','',None,'None']:
+        print(f"WARNING, ultima_cram set to  '{cram_aligner}'",file=sys.stderr)
         return []
     elif cram_aligner in ['ug','hyb']:
         pass
@@ -459,7 +460,7 @@ def get_ultima_downsample(wildcards):
 
         except:
             raise Exception(f"ERROR:  {ss_pct} is not a valid downsample percentage or 'na'. Please check your manifest and try again.")
-        
+
     return ss_pct_as_int
     
 
@@ -525,7 +526,6 @@ rule pre_prep_ultima_cram:
         else
             echo 'not downsampling: {params.downsample}' >> {log} 2>&1;
             {params.c} {input[0]} {output.cram} >> {log} 2>&1;
-            {params.c} {input[0]} {output.cram} >> {log} 2>&1;
             sleep 5;
             {params.c} {input[1]} {output.crai} >> {log} 2>&1;
         fi
@@ -570,7 +570,6 @@ rule pre_prep_ont_cram:
 
         else
             echo 'not downsampling, {params.downsample}' >> {log} 2>&1;
-            {params.c} {input[0]} {output.cram} >> {log} 2>&1;
             {params.c} {input[0]} {output.cram} >> {log} 2>&1;
             sleep 5;
             {params.c} {input[1]} {output.crai} >> {log} 2>&1;
