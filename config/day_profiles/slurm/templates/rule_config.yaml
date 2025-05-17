@@ -128,7 +128,7 @@ strobe_align_sort:
     env_yaml: "../envs/strobe_aligner.yaml"
     partition: "i192mem"
     threads: 192
-    strobe_threads: 192
+    strobe_threads: 128
     sort_threads: 64
     tofq_threads: 2
     mem_mb: 200000  # Should be set to calculate dyanamically by FASTQsize
