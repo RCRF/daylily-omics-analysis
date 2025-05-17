@@ -104,7 +104,8 @@ else:
             crai=MDIR+"{sample}/align/ug/{sample}.ug.cram.crai",
         output:
             bami=temp(MDIR + "{sample}/align/strobe/{sample}.strobe.sort.bam.bai"),
-            bamo=temp(MDIR + "{sample}/align/strobe/{sample}.strobe.sort.bam")
+            bamo=temp(MDIR + "{sample}/align/strobe/{sample}.strobe.sort.bam"),
+            tfq=temp("/dev/shm/{sample}.strobe.sort.fastq.gz")
         log:
             MDIR + "{sample}/align/strobe/logs/{sample}.strobe_sort.log",
         resources:
@@ -158,8 +159,9 @@ else:
             ulimit -n 65536 || echo "ulimit mod failed";
 
 
-            samtools fastq -n --reference {params.huref} -@ {params.sort_threads} -s -  {input.cram} \
-            {params.mbuffer} | {params.strobe_cmd} \
+            samtools fastq  --reference {params.huref} -@ {params.threads}  {input.cram} | gzip > {output.tfq} >> {log} 2>&1;
+            
+            {params.strobe_cmd} \
             -t {params.strobe_threads} {params.strobe_opts} \
             --rg-id="{params.cluster_sample}-$epocsec" \
             --rg="SM:{params.cluster_sample}" \
@@ -168,7 +170,7 @@ else:
             --rg=PU:"{params.rgpu}" \
             --rg=CN:"{params.rgcn}" \
             --rg=PG:"{params.rgpg}" \
-            --use-index {params.huref} -  {params.mbuffer} \
+            --use-index {params.huref} {output.tfq}  {params.mbuffer} \
             |  samtools sort \
             -l 1  \
             -m {params.sort_thread_mem}   \
