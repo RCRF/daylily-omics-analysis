@@ -64,7 +64,7 @@ rule deepvariant_ultima_make_examples:
     container:
         "docker://ultimagenomics/make_examples"
     priority: 45
-        resources:
+    resources:
         vcpu=config['deepvariant']['threads'],
         threads=config['deepvariant']['threads'],
         partition=config['deepvariant']['partition'],
@@ -136,6 +136,11 @@ rule deepvariant_ultima_call_variants:
     container:
         "docker://ultimagenomics/call_variants"
     priority: 44  # slightly lower priority to ensure examples first
+    resources:
+        vcpu=config['deepvariant']['threads'],
+        threads=config['deepvariant']['threads'],
+        partition=config['deepvariant']['partition'],
+        mem_mb=config['deepvariant']['mem_mb'],
     params:
         checkpoint="/opt/models/ultima_wgs/model.ckpt",
         dchrm=get_dvchrmug_day,
