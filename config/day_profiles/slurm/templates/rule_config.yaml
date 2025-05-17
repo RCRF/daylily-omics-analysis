@@ -137,7 +137,7 @@ strobe_align_sort:
     cmd: "  OMP_NUM_THREADS=192 OMP_PLACES=threads OMP_PROC_BIND=close OMP_DYNAMIC=true OMP_MAX_ACTIVE_LEVELS=1 OMP_SCHEDULE=dynamic OMP_WAIT_POLICY=ACTIVE resources/strobealign/bin/strobealign  " # removed  OMP_PROC_BIND=close
     strobe_opts: " -N 5   " 
     sort_thread_mem: "524M"  
-    mbuffer: "  | mbuffer -m 100G -q -s 2M "
+    mbuffer: "  | mbuffer -m 128G -q -s 2M "
     constraint: ""  # " --constraint 'm7gb768|r7gb1536' "
 
 
