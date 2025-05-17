@@ -442,6 +442,7 @@ def get_ultima_cramsx(wildcards):
 
 def get_ultima_downsample(wildcards):
     ss_pct = 'na'
+    ss_pct_as_int = 'na'
     try:
         ss_pct = samples.loc[(wildcards.sample), "ultima_subsample_pct"][0]
     except:
@@ -464,6 +465,8 @@ def get_ultima_downsample(wildcards):
 
 def get_ont_downsample(wildcards):
     ss_pct = 'na'
+    ss_pct_as_int = 'na'
+    
     try:
         ss_pct = samples.loc[(wildcards.sample), "ont_subsample_pct"][0]
     except:
