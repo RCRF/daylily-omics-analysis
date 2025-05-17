@@ -143,6 +143,7 @@ strobe_align_sort:
 
 clair3:
     threads: 64
+    ont_threads: 96
     clair3_threads: 64
     partition: "i192,i192mem"
     samview_threads: 8
