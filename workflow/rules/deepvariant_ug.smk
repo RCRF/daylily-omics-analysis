@@ -175,7 +175,6 @@ rule dvug_sort_index_chunk_vcf:
         threads=4,
         partition=config['deepvariant']['partition_other'],
     params:
-        cluster_sample=ret_sample,
         dchrm=get_dvchrm_day,
         deep_model=get_deep_model,
         cluster_sample=ret_sample, #
