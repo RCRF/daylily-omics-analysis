@@ -84,7 +84,7 @@ rule clair3:
         MDIR + "{sample}/align/{alnr}/snv/clair3/log/{sample}.{alnr}.clair3.{clairchrm}.snv.log",
     threads: config['clair3']['threads'] if get_instrument in ['na',None,'None'] else config['clair3']['ont_threads']
     container:
-        "docker://hkubal/clair3:latest"
+        "docker://hkubal/clair3:v1.1.0"
     priority: 45
     resources:
         vcpu=config['clair3']['threads'],
