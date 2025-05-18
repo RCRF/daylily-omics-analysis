@@ -154,7 +154,7 @@ rule deepvariant_ultima_call_variants:
 rule dvug_sort_index_chunk_vcf:
     input:
         vcf=MDIR
-        + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.deepug.{dvchrm}.snv.vcf.gz",
+        + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.deepug.{dvchrm}.snv.vcf.tfrecord.gz",
     priority: 46
     output:
         vcfsort=MDIR
