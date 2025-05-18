@@ -26,7 +26,7 @@ if "sent" in DDUP:
             cluster_sample=ret_sample,
 	        huref=config["supporting_files"]["files"]["huref"]["fasta"]["name"],
             max_mem=config["sentieon_markdups"]["max_mem"],
-            numa=config['sentieon_markdups']['numa'],
+            numa=config['sentieon_markdups']['numactl'],
         resources:
             threads=config['sentieon_markdups']['threads'],
             partition=config['sentieon_markdups']['partition'],
