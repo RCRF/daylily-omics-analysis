@@ -142,7 +142,7 @@ rule deepvariant_ultima_call_variants:
         --ref={params.huref} \
         --regions=$dchr \
         --sample_name="{params.cluster_sample}" \
-        --infile={output.trf} \
+        --infile=$(dirname {output.vcf})/*\-of\-*tfrecord.gz \
         --outfile=$(dirname {output.vcf})  >> {log} 2>&1;
 
         touch {output.vcf} >> {log} 2>&1;
