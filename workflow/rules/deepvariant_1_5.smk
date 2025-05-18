@@ -20,7 +20,7 @@ rule deepvariant_15:
         + "{sample}/align/{alnr}/snv/deep15/log/{sample}.{alnr}.deep15.{dvchrm}.snv.log",
     threads: config['deepvariant']['threads']
     container:
-        config['deevariant']['deep15_container']
+        config['deepvariant']['deep15_container']
     priority: 45
     resources:
         vcpu=config['deepvariant']['threads'],
@@ -98,7 +98,7 @@ rule deep15_sort_index_chunk_vcf:
         vcftbi=MDIR
         + "{sample}/align/{alnr}/snv/deep15/vcfs/{dvchrm}/{sample}.{alnr}.deep15.{dvchrm}.snv.sort.vcf.gz.tbi",
     conda:
-        config['deevariant']['deep15_conda']
+        config['deepvariant']['deep15_conda']
     log:
         MDIR
         + "{sample}/align/{alnr}/snv/deep15/vcfs/{dvchrm}/log/{sample}.{alnr}.deep15.{dvchrm}.snv.sort.vcf.gz.log",
@@ -146,7 +146,7 @@ rule deep15_concat_fofn:
     benchmark:
         MDIR + "{sample}/benchmarks/{sample}.{alnr}.deep15.concat.fofn.bench.tsv"
     conda:
-        config['deevariant']['deep15_conda']
+        config['deepvariant']['deep15_conda']
     log:
         MDIR + "{sample}/align/{alnr}/snv/deep15/log/{sample}.{alnr}.deep15.cocncat.fofn.log",
     shell:
@@ -194,7 +194,7 @@ rule deep15_concat_index_chunks:
     benchmark:
         MDIR + "{sample}/benchmarks/{sample}.{alnr}.deep15.merge.bench.tsv"
     conda:
-        config['deevariant']['deep15_conda']
+        config['deepvariant']['deep15_conda']
     log:
         MDIR
         + "{sample}/align/{alnr}/snv/deep15/log/{sample}.{alnr}.deep15.snv.merge.sort.gatherered.log",
@@ -227,7 +227,7 @@ rule clear_combined_deep15_vcf:  # TARGET:  clear combined deep vcf so the chunk
         ),
     priority: 42
     conda:
-        config['deevariant']['deep15_conda']
+        config['deepvariant']['deep15_conda']
     resources:
         vcpu=2,
         threads=2,
@@ -269,7 +269,7 @@ rule produce_deep15_vcf:  # TARGET: deep variant vcf
     log:
         "gatheredall.deep15.log",
     conda:
-        config['deevariant']['deep15_conda']
+        config['deepvariant']['deep15_conda']
     shell:
         """
         # Convert VCF to BCF and index it

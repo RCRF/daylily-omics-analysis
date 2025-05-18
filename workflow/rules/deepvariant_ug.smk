@@ -16,7 +16,7 @@ rule deepvariant_ultima_make_examples:
         MDIR + "{sample}/align/{alnr}/snv/deepug/log/{sample}.{alnr}.make_examples.{dvchrm}."+f"{config['deepvariant']['threads']}.log"
     threads: config['deepvariant']['threads']
     container:
-        config['deevariant']['deepug_me_container']
+        config['deepvariant']['deepug_me_container']
     priority: 45
     resources:
         vcpu=config['deepvariant']['threads'],
@@ -92,7 +92,7 @@ rule deepvariant_ultima_call_variants:
         MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/log/{sample}.{alnr}.call_variants.{dvchrm}.log",
     threads: config['deepvariant']['threads']
     container:
-        config['deevariant']['deepug_cv_container']
+        config['deepvariant']['deepug_cv_container']
     priority: 44  # slightly lower priority to ensure examples first
     resources:
         vcpu=config['deepvariant']['threads'],
@@ -175,7 +175,7 @@ rule dvug_sort_index_chunk_vcf:
         vcftbi=MDIR
         + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.deepug.{dvchrm}.snv.sort.vcf.gz.tbi",
     conda:
-        config['deevariant']['deepug_conda']
+        config['deepvariant']['deepug_conda']
     log:
         MDIR
         + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/log/{sample}.{alnr}.deepug.{dvchrm}.snv.sort.vcf.gz.log",
@@ -223,7 +223,7 @@ rule deepug_concat_fofn:
     benchmark:
         MDIR + "{sample}/benchmarks/{sample}.{alnr}.deepug.concat.fofn.bench.tsv"
     conda:
-        config['deevariant']['deepug_conda']
+        config['deepvariant']['deepug_conda']
     log:
         MDIR + "{sample}/align/{alnr}/snv/deepug/log/{sample}.{alnr}.deepug.cocncat.fofn.log",
     shell:
@@ -271,7 +271,7 @@ rule deepug_concat_index_chunks:
     benchmark:
         MDIR + "{sample}/benchmarks/{sample}.{alnr}.deepug.merge.bench.tsv"
     conda:
-        config['deevariant']['deepug_conda']
+        config['deepvariant']['deepug_conda']
     log:
         MDIR
         + "{sample}/align/{alnr}/snv/deepug/log/{sample}.{alnr}.deepug.snv.merge.sort.gatherered.log",
@@ -304,7 +304,7 @@ rule clear_combined_deepug_vcf:  # TARGET:  clear combined deep vcf so the chunk
         ),
     priority: 42
     conda:
-        config['deevariant']['deepug_conda']
+        config['deepvariant']['deepug_conda']
     resources:
         vcpu=2,
         threads=2,
@@ -346,7 +346,7 @@ rule produce_deepug_vcf:  # TARGET: deep variant vcf
     log:
         "gatheredall.deepug.log",
     conda:
-        config['deevariant']['deepug_conda']
+        config['deepvariant']['deepug_conda']
     shell:
         """
         # Convert VCF to BCF and index it
