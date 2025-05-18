@@ -27,6 +27,7 @@ if "sent" in DDUP:
 	        huref=config["supporting_files"]["files"]["huref"]["fasta"]["name"],
             max_mem=config["sentieon_markdups"]["max_mem"],
             numa=config['sentieon_markdups']['numactl'],
+            cram_opts="3.0,compressor=rans",
         resources:
             threads=config['sentieon_markdups']['threads'],
             partition=config['sentieon_markdups']['partition'],
@@ -78,13 +79,13 @@ if "sent" in DDUP:
 
             {params.numa} LD_PRELOAD=$LD_PRELOAD /fsx/data/cached_envs/sentieon-genomics-202503.01.rc1/bin/sentieon driver \
             --input {input.bam} \
-            --reference {input.ref} \
+            --reference {params.huref} \
             --thread_count {threads} \
             --algo LocusCollector --fun score_info {output.score} >> {log} 2>&1
 
             {params.numa} LD_PRELOAD=$LD_PRELOAD /fsx/data/cached_envs/sentieon-genomics-202503.01.rc1/bin/sentieon driver \
             --input {input.bam} \
-            --reference {input.ref} \
+            --reference {params.huref} \
             --thread_count {threads} \
             --algo Dedup \
             --score_info {output.score} \
