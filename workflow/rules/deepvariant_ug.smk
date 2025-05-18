@@ -99,7 +99,7 @@ rule deepvariant_ultima_call_variants:
         partition=config['deepvariant']['partition'],
         mem_mb=config['deepvariant']['mem_mb'],
     params:
-        checkpoint="/opt/models/wgs/model.ckpt",
+        checkpoint="/opt/models/wgs",
         dchrm=get_dvchrm_day,
         deep_model=get_deep_model,
         cluster_sample=ret_sample, #
