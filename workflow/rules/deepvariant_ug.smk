@@ -126,7 +126,7 @@ rule deepvariant_ultima_call_variants:
         dchr=$(echo {params.cpre}{params.dchrm} | sed 's/~/\:/g' | sed 's/23\:/X\:/' | sed 's/24\:/Y\:/' | sed 's/25\:/{params.mito_code}\:/' );
 
         timestamp=$(date +%Y%m%d%H%M%S)_$(head /dev/urandom | tr -dc a-zA-Z0-9 | head -c 6)
-        export TMPDIR=$(dirname {log})/deepvariantugcv_tmp_$timestamp;;
+        export TMPDIR=$(dirname {log})/deepvariantugcv_tmp_$timestamp;
         mkdir -p $TMPDIR;
         trap "rm -rf \"$TMPDIR\" || echo '$TMPDIR rm fails' >> {log} 2>&1" EXIT;
         echo "DCHRM: $dchr" >> {log} 2>&1;
