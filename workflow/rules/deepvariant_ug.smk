@@ -68,7 +68,7 @@ rule deepvariant_ultima_make_examples:
             --reads={input.cram} \
             --regions=$dchr \
             --channels="read_base,base_quality,mapping_quality,strand,read_supports_variant,base_differs_from_ref,homopolymer" \
-            --sample_name="{params.cluster_sample} \
+            --sample_name="{params.cluster_sample}"" \
             --enable_joint_realignment={params.realign} {params.perror} \
             --examples={output.examples}  >> {log} 2>&1;
 
