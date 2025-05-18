@@ -86,8 +86,8 @@ rule deepvariant_ultima_call_variants:
     input:
         examples=MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.{dvchrm}.examples.tfrecord@"+f"{config['deepvariant']['threads']}.gz"
     output:
-        vcf=MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.deepug.{dvchrm}.snv.vcf.tfrecord.gz",
-        #tvcf=temp(MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.deepug.{dvchrm}.snv.tmp.vcf"),
+        vcf=MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.deepug.{dvchrm}.snv.vcf.gz",
+        trf=MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.deepug.{dvchrm}.snv.tfrecord.gz",
     log:
         MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/log/{sample}.{alnr}.call_variants.{dvchrm}.log",
     threads: config['deepvariant']['threads']
@@ -138,10 +138,15 @@ rule deepvariant_ultima_call_variants:
 
         {params.numa} \
         /opt/deepvariant/bin/call_variants \
-            --outfile={output.vcf} \
+            --outfile={output.trf} \
             --examples={input.examples} \
             --checkpoint={params.checkpoint}             >> {log} 2>&1;
         
+        /opt/deepvariant/bin/postprocess_variants \
+        --ref={params.huref} \
+        --infile={output.trf} \
+        --outfile={output.vcf}  >> {log} 2>&1;
+
         #tabix -p vcf {output.vcf} >> {log} 2>&1;
 
         end_time=$(date +%s);
