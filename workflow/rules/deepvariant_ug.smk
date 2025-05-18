@@ -36,6 +36,9 @@ rule deepvariant_ultima_make_examples:
         cpre="" if "b37" == config['genome_build'] else "chr",
         deep_threads=config['deepvariant']['deep_threads'],
         mito_code="MT" if "b37" == config['genome_build'] else "M",
+        instrument=get_instrument, 
+        realign="true" if  get_instrument in ["ultima","ug"] else "false",
+        perror=" --p_error=0.005 " if  get_instrument in ["ultima","ug"] else "",
     shell:
         """
         TOKEN=$(curl -X PUT 'http://169.254.169.254/latest/api/token' -H 'X-aws-ec2-metadata-token-ttl-seconds: 21600');
@@ -64,6 +67,7 @@ rule deepvariant_ultima_make_examples:
             --ref={params.huref} \
             --reads={input.cram} \
             --regions=$dchr \
+            --enable_joint_realignment={params.realign} {params.perror} \
             --examples={output.examples} \
             --use_hp_information=true \
             --logging_dir=$(dirname {log}) \

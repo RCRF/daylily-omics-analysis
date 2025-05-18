@@ -46,8 +46,6 @@ rule deepvariant_19:
         mito_code="MT" if "b37" == config['genome_build'] else "M",
         deep_model=get_deep_model, # ultima and ILMN, use WGS or WES. PacBio PACBIO, on ONT_R104
         instrument=get_instrument, 
-        realign="true" if  get_instrument in ["ultima","ug"] else "false",
-        perror=" --p_error=0.005 " if  get_instrument in ["ultima","ug"] else "",
     shell:
         """
         TOKEN=$(curl -X PUT 'http://169.254.169.254/latest/api/token' -H 'X-aws-ec2-metadata-token-ttl-seconds: 21600');
@@ -77,7 +75,6 @@ rule deepvariant_19:
         --output_vcf={output.vcf} \
         --num_shards={params.deep_threads} \
         --logging_dir=$(dirname {log}) \
-        --enable_joint_realignment={params.realign} {params.perror} \
         --dry_run=false >> {log} 2>&1;  
 
         end_time=$(date +%s);
