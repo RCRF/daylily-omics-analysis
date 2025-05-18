@@ -194,7 +194,7 @@ rule dvug_sort_index_chunk_vcf:
         --infile={input.trf} \
         --outfile={output.vcf}  >> {log} 2>&1;
 
-        touch {ouput} >> {log} 2>&1;
+        touch {output} >> {log} 2>&1;
 
         """
 
