@@ -89,7 +89,7 @@ rule deepvariant_1_9:
 
 
 
-rule dv_sort_index_chunk_vcf:
+rule deep19_sort_index_chunk_vcf:
     input:
         vcf=MDIR
         + "{sample}/align/{alnr}/snv/deep19/vcfs/{dvchrm}/{sample}.{alnr}.deep19.{dvchrm}.snv.vcf",
