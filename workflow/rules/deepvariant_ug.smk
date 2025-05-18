@@ -11,9 +11,9 @@ rule deepvariant_ultima_make_examples:
         crai=MDIR + "{sample}/align/{alnr}/{sample}.{alnr}.cram.crai",
         d=MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.ready",
     output:
-        examples=MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.{dvchrm}.examples.tfrecord.gz"
+        examples=MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.{dvchrm}.examples.tfrecord@"+f"{config['deepvariant']['threads']}.gz"
     log:
-        MDIR + "{sample}/align/{alnr}/snv/deepug/log/{sample}.{alnr}.make_examples.{dvchrm}.log"
+        MDIR + "{sample}/align/{alnr}/snv/deepug/log/{sample}.{alnr}.make_examples.{dvchrm}."+f"{config['deepvariant']['threads']}.log"
     threads: config['deepvariant']['threads']
     container:
         config['deepvariant']['deepug_me_container']
@@ -24,7 +24,7 @@ rule deepvariant_ultima_make_examples:
         partition=config['deepvariant']['partition'],
         mem_mb=config['deepvariant']['mem_mb'],
     benchmark:
-        MDIR + "{sample}/benchmarks/{sample}.{alnr}.deepug.{dvchrm}.bench.tsv"
+        MDIR + "{sample}/benchmarks/{sample}.{alnr}.deepug.{dvchrm}."+f"{config['deepvariant']['threads']}.bench.tsv"
     params:
         dchrm=get_dvchrm_day,
         deep_model="WGS",
@@ -83,16 +83,17 @@ rule deepvariant_ultima_make_examples:
 
 rule deepvariant_ultima_call_variants:
     input:
-        examples=MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.{dvchrm}.examples.tfrecord.gz"
+       examples=MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.{dvchrm}.examples.tfrecord@"+f"{config['deepvariant']['threads']}.gz"
     output:
-        vcf=MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.deepug.{dvchrm}.snv.vcf.gz",
-        trf=MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.deepug.{dvchrm}.snv.tfrecord.gz",
+        trf=MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.deepug.{dvchrm}.snv.tfrecord@"+f"{config['deepvariant']['threads']}.gz",
     log:
-        MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/log/{sample}.{alnr}.call_variants.{dvchrm}.log",
+        MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/log/{sample}.{alnr}.call_variants.{dvchrm}."+f"{config['deepvariant']['threads']}".log",
     threads: config['deepvariant']['threads']
     container:
         config['deepvariant']['deepug_cv_container']
     priority: 44  # slightly lower priority to ensure examples first
+    benchmark:
+        MDIR + "{sample}/benchmarks/{sample}.{alnr}.deepug.{dvchrm}.cv."+f"{config['deepvariant']['threads']}.bench.tsv"
     resources:
         vcpu=config['deepvariant']['threads'],
         threads=config['deepvariant']['threads'],
@@ -136,18 +137,10 @@ rule deepvariant_ultima_call_variants:
             --outfile={output.trf} \
             --examples={input.examples} \
             --checkpoint={params.checkpoint}             >> {log} 2>&1;
-        
 
-        /opt/deepvariant/bin/postprocess_variants -j {threads} \
-        --ref={params.huref} \
-        --regions=$dchr \
-        --sample_name="{params.cluster_sample}" \
-        --infile={output.trf} \
-        --outfile={output.vcf}  >> {log} 2>&1;
+        touch {output.trf} >> {log} 2>&1;
 
-        touch {output.vcf} >> {log} 2>&1;
         #tabix -p vcf {output.vcf} >> {log} 2>&1;
-
 
         end_time=$(date +%s);
         elapsed_time=$((($end_time - $start_time) / 60));
@@ -161,8 +154,7 @@ rule deepvariant_ultima_call_variants:
 
 rule dvug_sort_index_chunk_vcf:
     input:
-        vcf=MDIR
-        + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.deepug.{dvchrm}.snv.vcf.gz",
+        trf=MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.deepug.{dvchrm}.snv.tfrecord@"+f"{config['deepvariant']['threads']}.gz",
     priority: 46
     output:
         vcfsort=MDIR
@@ -171,11 +163,15 @@ rule dvug_sort_index_chunk_vcf:
         + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.deepug.{dvchrm}.snv.sort.vcf.gz",
         vcftbi=MDIR
         + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.deepug.{dvchrm}.snv.sort.vcf.gz.tbi",
-    conda:
-        config['deepvariant']['deepug_conda']
+        vcf=MDIR
+        + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.deepug.{dvchrm}.snv.vcf.gz",
+    container:
+        config['deepvariant']['deepug_cv_container']
     log:
         MDIR
         + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/log/{sample}.{alnr}.deepug.{dvchrm}.snv.sort.vcf.gz.log",
+    benchmark:
+        MDIR + "{sample}/benchmarks/{sample}.{alnr}.deepug.{dvchrm}.srt."+f"{config['deepvariant']['threads']}.bench.tsv"
     resources:
         vcpu=4,
         threads=4,
@@ -185,12 +181,19 @@ rule dvug_sort_index_chunk_vcf:
     threads: 4 #config["config"]["sort_index_deepDna_chunk_vcf"]['threads']
     shell:
         """
-        bedtools sort -header -i {input.vcf} > {output.vcfsort} 2>> {log};
-        
-        bgzip {output.vcfsort} >> {log} 2>&1;     
-        touch {output.vcfsort};
+        #bedtools sort -header -i input.vcf > {output.vcfsort} 2>> {log};
+        #bgzip {output.vcfsort} >> {log} 2>&1;     
+        #touch {output.vcfsort};
+        #tabix -f -p vcf {output.vcfgz} >> {log} 2>&1;
 
-        tabix -f -p vcf {output.vcfgz} >> {log} 2>&1;
+        /opt/deepvariant/bin/postprocess_variants -j {threads} \
+        --ref={params.huref} \
+        --regions=$dchr \
+        --sample_name="{params.cluster_sample}" \
+        --infile={input.trf} \
+        --outfile={output.vcf}  >> {log} 2>&1;
+
+        touch {ouput} >> {log} 2>&1;
 
         """
 

@@ -17,7 +17,7 @@ if "sent" in DDUP:
             crai="{MDIR}{sample}/align/{alnr}/{sample}.{alnr}.cram.crai",
             score="{MDIR}{sample}/align/{alnr}/{sample}.{alnr}.cram.score.txt",
             metrics="{MDIR}{sample}/align/{alnr}/{sample}.{alnr}.cram.mrkdup.metrics",
-        threads: config["sentieon"]["threads"]
+        threads: config["sentieon_markdups"]["threads"]
         benchmark:
             repeat("{MDIR}{sample}/benchmarks/{sample}.{alnr}.mrkdup.bench.tsv", 0)
         conda:
