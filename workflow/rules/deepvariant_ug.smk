@@ -187,6 +187,9 @@ rule dvug_sort_index_chunk_vcf:
         #touch {output.vcfsort};
         #tabix -f -p vcf {output.vcfgz} >> {log} 2>&1;
 
+
+        dchr=$(echo {params.cpre}{params.dchrm} | sed 's/~/\:/g' | sed 's/23\:/X\:/' | sed 's/24\:/Y\:/' | sed 's/25\:/{params.mito_code}\:/' );
+
         /opt/deepvariant/bin/postprocess_variants -j {threads} \
         --ref={params.huref} \
         --regions=$dchr \
