@@ -104,8 +104,7 @@ else:
             crai=MDIR+"{sample}/align/ug/{sample}.ug.cram.crai",
         output:
             bami=temp(MDIR + "{sample}/align/strobe/{sample}.strobe.sort.bam.bai"),
-            bamo=temp(MDIR + "{sample}/align/strobe/{sample}.strobe.sort.bam"),
-            tfq=temp("/dev/shm/{sample}.strobe.sort.fastq.gz")
+            bamo=temp(MDIR + "{sample}/align/strobe/{sample}.strobe.sort.bam")
         log:
             MDIR + "{sample}/align/strobe/logs/{sample}.strobe_sort.log",
         resources:
@@ -157,17 +156,11 @@ else:
             epocsec=$(date +'%s');
 
             ulimit -n 65536 || echo "ulimit mod failed";
-
-
-
             # THIS DOES NOT WORK AT ALL DUE TO ULTIMA FASTQ QUALSCORE PECULIARITIES
 
-            samtools view -h -T /fsx/data/genomic_data/organism_references/H_sapiens/hg38/fasta_fai_minalt/GRCh38_no_alt_analysis_set.fasta \
-                     -@ 64 results/day/hg38/R0_HG006_D0_0/align/ug/R0_HG006_D0_0.ug.cram  \
-                | samtools sort -l 1 -m 3G -@ 64 -O BAM -T $tmpdir - \
-                | samtools fastq  --reference /fsx/data/genomic_data/organism_references/H_sapiens/hg38/fasta_fai_minalt/GRCh38_no_alt_analysis_set.fasta -n -@ 32 -o {output.tfq} - 
-            
-            {params.strobe_cmd} \
+            samtools fastq --reference {params.huref} \
+            -@ {params.threads} -n -f 0 {input.cram}   \
+            | {params.strobe_cmd} \
             -t {params.strobe_threads} {params.strobe_opts} \
             --rg-id="{params.cluster_sample}-$epocsec" \
             --rg="SM:{params.cluster_sample}" \
