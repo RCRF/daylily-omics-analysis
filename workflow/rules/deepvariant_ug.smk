@@ -66,6 +66,7 @@ rule deepvariant_ultima_make_examples:
             --ref={params.huref} \
             --reads={input.cram} \
             --regions=$dchr \
+            --channel_list=read_base,base_quality,mapping_quality,strand,read_supports_variant,base_differs_from_ref \
             --enable_joint_realignment={params.realign} {params.perror} \
             --examples={output.examples}  >> {log} 2>&1;
 
