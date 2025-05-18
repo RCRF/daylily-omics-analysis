@@ -42,17 +42,17 @@ rule deepvariant_ultima_make_examples:
     shell:
         """
         TOKEN=$(curl -X PUT 'http://169.254.169.254/latest/api/token' -H 'X-aws-ec2-metadata-token-ttl-seconds: 21600');
-        itype=$(curl -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/instance-type);
+        export itype=$(curl -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/instance-type);
         echo "INSTANCE TYPE: $itype" > {log};
-        mkdir -p $(dirname {output.examples})
+        mkdir -p $(dirname {output.examples});
         
         # Log the start time as 0 seconds
-        start_time=$(date +%s);
+        export start_time=$(date +%s);
         echo "Start-Time-sec:$itype\t0" >> {log} 2>&1;
 
         dchr=$(echo {params.cpre}{params.dchrm} | sed 's/~/\:/g' | sed 's/23\:/X\:/' | sed 's/24\:/Y\:/' | sed 's/25\:/{params.mito_code}\:/' );
 
-        timestamp=$(date +%Y%m%d%H%M%S)_$(head /dev/urandom | tr -dc a-zA-Z0-9 | head -c 6)
+        timestamp=$(date +%Y%m%d%H%M%S)_$(head /dev/urandom | tr -dc a-zA-Z0-9 | head -c 6);
 
         export TMPDIR=/fsx/scratch/deepvariantug2_tmp_$timestamp;
         mkdir -p $TMPDIR;
@@ -71,8 +71,8 @@ rule deepvariant_ultima_make_examples:
             --examples={output.examples}  >> {log} 2>&1;
 
         
-        end_time=$(date +%s);
-        elapsed_time=$((($end_time - $start_time) / 60));
+        export end_time=$(date +%s);
+        export elapsed_time=$((($end_time - $start_time) / 60));
 
         # Log the elapsed time
         echo "Elapsed-Time-min:\t$itype\t$elapsed_time" >> {log} 2>&1;
