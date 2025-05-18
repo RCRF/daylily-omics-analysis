@@ -41,23 +41,26 @@ rule deepvariant_ultima_make_examples:
         perror=" --p_error=0.005 " if  get_instrument in ["ultima","ug"] else "",
     shell:
         """
-        
-        mkdir -p $(dirname {output.examples});
+        TOKEN=$(curl -X PUT 'http://169.254.169.254/latest/api/token' -H 'X-aws-ec2-metadata-token-ttl-seconds: 21600');
+        itype=$(curl -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/instance-type);
+        echo "INSTANCE TYPE: $itype" > {log};
+        mkdir -p $(dirname {output.examples})
         
         # Log the start time as 0 seconds
-        export start_time=$(date +%s);
+        start_time=$(date +%s);
         echo "Start-Time-sec:$itype\t0" >> {log} 2>&1;
 
         dchr=$(echo {params.cpre}{params.dchrm} | sed 's/~/\:/g' | sed 's/23\:/X\:/' | sed 's/24\:/Y\:/' | sed 's/25\:/{params.mito_code}\:/' );
 
-        timestamp=$(date +%Y%m%d%H%M%S)_$(head /dev/urandom | tr -dc a-zA-Z0-9 | head -c 6);
+        timestamp=$(date +%Y%m%d%H%M%S)_$(head /dev/urandom | tr -dc a-zA-Z0-9 | head -c 6)
 
         export TMPDIR=/fsx/scratch/deepvariantug2_tmp_$timestamp;
         mkdir -p $TMPDIR;
-        
+        APPTAINER_HOME=$TMPDIR;
         trap "rm -rf \"$TMPDIR\" || echo '$TMPDIR rm fails' >> {log} 2>&1" EXIT;
         echo "DCHRM: $dchr" >> {log} 2>&1;
         
+        {params.numa} \
         /opt/deepvariant/bin/make_examples \
             --mode calling \
             --ref={params.huref} \
@@ -67,8 +70,12 @@ rule deepvariant_ultima_make_examples:
             --enable_joint_realignment={params.realign} {params.perror} \
             --examples={output.examples}  >> {log} 2>&1;
 
-        echo COMPLETED >> {log} 2>&1;
-        ls -lth ./* >> {log} 2>&1;
+        
+        end_time=$(date +%s);
+        elapsed_time=$((($end_time - $start_time) / 60));
+
+        # Log the elapsed time
+        echo "Elapsed-Time-min:\t$itype\t$elapsed_time" >> {log} 2>&1;
         """
 
 
