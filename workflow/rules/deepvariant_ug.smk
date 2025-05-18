@@ -68,7 +68,6 @@ rule deepvariant_ultima_make_examples:
             --regions=$dchr \
             --enable_joint_realignment={params.realign} {params.perror} \
             --examples={output.examples} \
-            --use_hp_information=true \
             --logging_dir=$(dirname {log}) \
             --dry_run=false >> {log} 2>&1;
 
