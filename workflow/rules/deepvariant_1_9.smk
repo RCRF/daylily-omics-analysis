@@ -121,7 +121,7 @@ rule dv_sort_index_chunk_vcf:
         """
 
 
-rule deep_concat_fofn:
+rule deep19_concat_fofn:
     input:
         chunk_tbi=sorted(
             expand(
@@ -161,7 +161,7 @@ rule deep_concat_fofn:
         """
 
 
-rule deep_concat_index_chunks:
+rule deep19_concat_index_chunks:
     input:
         fofn=MDIR
         + "{sample}/align/{alnr}/snv/deep19/{sample}.{alnr}.deep19.snv.concat.vcf.gz.fofn",
@@ -218,7 +218,7 @@ rule deep_concat_index_chunks:
         """
 
 
-rule clear_combined_deep_vcf:  # TARGET:  clear combined deep vcf so the chunks can be re-evaluated if needed.
+rule clear_combined_deep19_vcf:  # TARGET:  clear combined deep vcf so the chunks can be re-evaluated if needed.
     input:
         vcf=expand(
             MDIR + "{sample}/align/{alnr}/snv/deep19/{sample}.{alnr}.deep19.snv.sort.vcf.gz",
@@ -236,7 +236,7 @@ rule clear_combined_deep_vcf:  # TARGET:  clear combined deep vcf so the chunks 
         "(rm {input.vcf}*   1> /dev/null  2> /dev/null ) || echo 'file not found for deletion: {input}';"
 
 
-rule produce_deep_vcf:  # TARGET: deep variant vcf
+rule produce_deep19_vcf:  # TARGET: deep variant vcf
     input:
         vcftb=expand(
             MDIR
@@ -292,10 +292,10 @@ rule produce_deep_vcf:  # TARGET: deep variant vcf
 
 
 localrules:
-    prep_deep_chunkdirs,
+    prep_deep19_chunkdirs,
 
 
-rule prep_deep_chunkdirs:
+rule prep_deep19_chunkdirs:
     input:
         b=MDIR + "{sample}/align/{alnr}/{sample}.{alnr}.cram",
         i=MDIR + "{sample}/align/{alnr}/{sample}.{alnr}.cram.crai",
