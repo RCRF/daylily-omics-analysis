@@ -16,7 +16,7 @@ rule deepvariant_ultima_make_examples:
         MDIR + "{wildcards.sample}/align/{wildcards.alnr}/snv/deepug/log/{wildcards.sample}.{wildcards.alnr}.make_examples.{wildcards.dvchrm}.{threads}.log"
     threads: config['deepvariant']['threads']
     container:
-        "docker://ultimagenomics/make_examples"
+        "docker://google/deepvariant:1.9.0"  #"docker://ultimagenomics/make_examples"
     priority: 45
     resources:
         vcpu=config['deepvariant']['threads'],
@@ -92,7 +92,7 @@ rule deepvariant_ultima_call_variants:
         MDIR + "{sample}/align/{alnr}/snv/deepug/log/{sample}.{alnr}.call_variants.{dvchrm}.log",
     threads: config['deepvariant']['threads']
     container:
-        "docker://ultimagenomics/call_variants"
+        "docker://google/deepvariant:1.9.0" #"docker://ultimagenomics/call_variants"
     priority: 44  # slightly lower priority to ensure examples first
     resources:
         vcpu=config['deepvariant']['threads'],
