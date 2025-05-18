@@ -41,9 +41,7 @@ rule deepvariant_ultima_make_examples:
         perror=" --p_error=0.005 " if  get_instrument in ["ultima","ug"] else "",
     shell:
         """
-        TOKEN=$(curl -X PUT 'http://169.254.169.254/latest/api/token' -H 'X-aws-ec2-metadata-token-ttl-seconds: 21600');
-        export itype=$(curl -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/instance-type);
-        echo "INSTANCE TYPE: $itype" > {log};
+        
         mkdir -p $(dirname {output.examples});
         
         # Log the start time as 0 seconds
@@ -70,12 +68,8 @@ rule deepvariant_ultima_make_examples:
             --enable_joint_realignment={params.realign} {params.perror} \
             --examples={output.examples}  >> {log} 2>&1;
 
-        
-        export end_time=$(date +%s);
-        export elapsed_time=$((($end_time - $start_time) / 60));
-
-        # Log the elapsed time
-        echo "Elapsed-Time-min:\t$itype\t$elapsed_time" >> {log} 2>&1;
+        echo "COMPLETED" >> {log} 2>&1;
+        ls -lth ./* >> {log} 2>&1;
         """
 
 
