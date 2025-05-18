@@ -41,7 +41,7 @@ rule deepvariant_ultima_make_examples:
         perror=" --p_error=0.005 " if  get_instrument in ["ultima","ug"] else "",
     shell:
         """
-        mkdir -p $(dirname {output.examples})
+        mkdir -p $(dirname {output.examples});
 
         TOKEN=$(curl -X PUT 'http://169.254.169.254/latest/api/token' -H 'X-aws-ec2-metadata-token-ttl-seconds: 21600');
         itype=$(curl -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/instance-type);
@@ -53,11 +53,10 @@ rule deepvariant_ultima_make_examples:
 
         dchr=$(echo {params.cpre}{params.dchrm} | sed 's/~/\:/g' | sed 's/23\:/X\:/' | sed 's/24\:/Y\:/' | sed 's/25\:/{params.mito_code}\:/' );
 
-        timestamp=$(date +%Y%m%d%H%M%S)_$(head /dev/urandom | tr -dc a-zA-Z0-9 | head -c 6)
+        timestamp=$(date +%Y%m%d%H%M%S)_$(head /dev/urandom | tr -dc a-zA-Z0-9 | head -c 6);
 
-        export TMPDIR=/dev/shm/deepvariant_tmp_$timestamp;
+        export TMPDIR=$(dirname {log})/tmp;
         mkdir -p $TMPDIR;
-        export APPTAINER_HOME=$TMPDIR;
         trap "rm -rf \"$TMPDIR\" || echo '$TMPDIR rm fails' >> {log} 2>&1" EXIT;
         echo "DCHRM: $dchr" >> {log} 2>&1;
 
