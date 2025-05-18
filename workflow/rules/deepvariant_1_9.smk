@@ -20,7 +20,7 @@ rule deepvariant_19:
         + "{sample}/align/{alnr}/snv/deep19/log/{sample}.{alnr}.deep19.{dvchrm}.snv.log",
     threads: config['deepvariant']['threads']
     container:
-        "docker://google/deepvariant:1.9.0"  # daylilyinformatics/deepvariant-avx512
+        config['deepvariant']['deep19_container'] 
     priority: 45
     resources:
         vcpu=config['deepvariant']['threads'],
@@ -99,7 +99,7 @@ rule deep19_sort_index_chunk_vcf:
         vcftbi=MDIR
         + "{sample}/align/{alnr}/snv/deep19/vcfs/{dvchrm}/{sample}.{alnr}.deep19.{dvchrm}.snv.sort.vcf.gz.tbi",
     conda:
-        "../envs/vanilla_v0.1.yaml"
+        config['deepvariant']['deep19_conda'] 
     log:
         MDIR
         + "{sample}/align/{alnr}/snv/deep19/vcfs/{dvchrm}/log/{sample}.{alnr}.deep19.{dvchrm}.snv.sort.vcf.gz.log",
@@ -147,7 +147,7 @@ rule deep19_concat_fofn:
     benchmark:
         MDIR + "{sample}/benchmarks/{sample}.{alnr}.deep19.concat.fofn.bench.tsv"
     conda:
-        "../envs/vanilla_v0.1.yaml"
+        config['deepvariant']['deep19_conda'] 
     log:
         MDIR + "{sample}/align/{alnr}/snv/deep19/log/{sample}.{alnr}.deep19.cocncat.fofn.log",
     shell:
@@ -195,7 +195,7 @@ rule deep19_concat_index_chunks:
     benchmark:
         MDIR + "{sample}/benchmarks/{sample}.{alnr}.deep19.merge.bench.tsv"
     conda:
-        "../envs/vanilla_v0.1.yaml"
+        config['deepvariant']['deep19_conda'] 
     log:
         MDIR
         + "{sample}/align/{alnr}/snv/deep19/log/{sample}.{alnr}.deep19.snv.merge.sort.gatherered.log",
@@ -228,7 +228,7 @@ rule clear_combined_deep19_vcf:  # TARGET:  clear combined deep vcf so the chunk
         ),
     priority: 42
     conda:
-        "../envs/vanilla_v0.1.yaml"
+        config['deepvariant']['deep19_conda'] 
     resources:
         vcpu=2,
         threads=2,
@@ -270,7 +270,7 @@ rule produce_deep19_vcf:  # TARGET: deep variant vcf
     log:
         "gatheredall.deep19.log",
     conda:
-        "../envs/vanilla_v0.1.yaml"
+        config['deepvariant']['deep19_conda'] 
     shell:
         """
         # Convert VCF to BCF and index it

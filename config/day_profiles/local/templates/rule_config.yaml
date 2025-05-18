@@ -171,6 +171,13 @@ deepvariant:
     hg38_broad_deep_chrms:  "19,21"  #all numeric 1-22, X=23, Y=24, MT=25, no prefixes
     b37_deep_chrms:  "19,21"  #all numeric 1-22, X=23, Y=24, MT=25, no prefixes
     numa: " OMP_NUM_THREADS=8 OMP_PROC_BIND=close OMP_PLACES=threads OMP_PROC_BIND=TRUE OMP_DYNAMIC=TRUE OMP_MAX_ACTIVE_LEVELS=1 OMP_SCHEDULE=dynamic OMP_WAIT_POLICY=ACTIVE "
+    deep19_conda: "../envs/vanilla_v0.1.yaml"
+    deep19_container: "docker://daylilyinformatics/deepvariant-avx512:1.9.0"  # "docker://google/deepvariant:1.9.0  # docker://daylilyinformatics/deepvariant-avx512:1.9.0
+    deep15_conda: "../envs/vanilla_v0.1.yaml"
+    deep15_container: "docker://daylilyinformatics/deepvariant-avx512:1.5.0" 
+    deepug_cv_container: "docker://google/deepvariant:1.9.0"  #"docker://ultimagenomics/call_variants"
+    deepug_conda: "../envs/vanilla_v0.1.yaml"
+    deepug_me_container: "docker://google/deepvariant:1.9.0"  #"docker://ultimagenomics/call_variants"
 
 duphold:
     threads: 7
@@ -594,7 +601,6 @@ sentieon:
     mbuffer: " | mbuffer -m 1G -q -s 128k "
     bwa_model: "/fsx/data/cached_envs/sentieon-genomics-202503.01.rc1/bundles/SentieonIlluminaWGS2.2.bundle/bwa.model"
     constraint: ""
-
 
 sentieon_markdups:
     threads: 7
