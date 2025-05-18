@@ -177,6 +177,7 @@ rule dvug_sort_index_chunk_vcf:
     params:
         mem_mb=config['deepvariant']['mem_mb'],
         numa=config['deepvariant']['numa'],
+        mito_code="MT" if "b37" == config['genome_build'] else "M",
         cpre="" if "b37" == config['genome_build'] else "chr",
         dchrm=get_dvchrm_day,
         deep_model=get_deep_model,
