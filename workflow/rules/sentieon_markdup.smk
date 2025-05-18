@@ -81,7 +81,6 @@ if "sent" in DDUP:
                 --thread_count {threads} \
                 --algo Dedup \
                 --metrics {output.metrics} \
-                --interval_padding 0 \
                 --cram_write_options version=3.0,compressor=rans \
                 {output.cram} >> {log} 2>&1
 
