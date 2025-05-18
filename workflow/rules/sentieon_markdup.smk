@@ -27,7 +27,8 @@ if "sent" in DDUP:
 	        huref=config["supporting_files"]["files"]["huref"]["fasta"]["name"],
             max_mem=config["sentieon_markdups"]["max_mem"],
             numa=config['sentieon_markdups']['numactl'],
-            cram_opts="3.0,compressor=rans",
+            cram_opts=" --cram_write_options version=3.0,compressor=rans,lazy_quality=true \
+ ",
         resources:
             threads=config['sentieon_markdups']['threads'],
             partition=config['sentieon_markdups']['partition'],
@@ -89,8 +90,7 @@ if "sent" in DDUP:
             --thread_count {threads} \
             --algo Dedup \
             --score_info {output.score} \
-            --metrics {output.metrics} \
-            --cram_write_options {params.cram_opts} \
+            --metrics {output.metrics} {params.cram_opts} \
             {output.cram} >> {log} 2>&1
 
             end_time=$(date +%s);
