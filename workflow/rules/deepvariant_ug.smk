@@ -11,9 +11,9 @@ rule deepvariant_ultima_make_examples:
         crai=MDIR + "{sample}/align/{alnr}/{sample}.{alnr}.cram.crai",
         d=MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.ready",
     output:
-        examples=MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.{dvchrm}.examples.tfrecord@"+f"{config['deepvariant']['threads']}.gz"
+        examples=MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.{dvchrm}.examples.tfrecord.gz"
     log:
-        MDIR + "{sample}/align/{alnr}/snv/deepug/log/{sample}.{alnr}.make_examples.{dvchrm}."+f"{config['deepvariant']['threads']}.log"
+        MDIR + "{sample}/align/{alnr}/snv/deepug/log/{sample}.{alnr}.make_examples.{dvchrm}.log"
     threads: config['deepvariant']['threads']
     container:
         config['deepvariant']['deepug_me_container']
@@ -24,7 +24,7 @@ rule deepvariant_ultima_make_examples:
         partition=config['deepvariant']['partition'],
         mem_mb=config['deepvariant']['mem_mb'],
     benchmark:
-        MDIR + "{sample}/benchmarks/{sample}.{alnr}.deepug.{dvchrm}."+f"{config['deepvariant']['threads']}.bench.tsv"
+        MDIR + "{sample}/benchmarks/{sample}.{alnr}.deepug.{dvchrm}.bench.tsv"
     params:
         dchrm=get_dvchrm_day,
         deep_model="WGS",
@@ -83,7 +83,7 @@ rule deepvariant_ultima_make_examples:
 
 rule deepvariant_ultima_call_variants:
     input:
-        examples=MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.{dvchrm}.examples.tfrecord@"+f"{config['deepvariant']['threads']}.gz"
+        examples=MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.{dvchrm}.examples.tfrecord.gz"
     output:
         vcf=MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.deepug.{dvchrm}.snv.vcf.gz",
         trf=MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.deepug.{dvchrm}.snv.tfrecord.gz",
@@ -142,8 +142,8 @@ rule deepvariant_ultima_call_variants:
         --ref={params.huref} \
         --regions=$dchr \
         --sample_name="{params.cluster_sample}" \
-        --infile=$(dirname {output.vcf})/*\-of\-*tfrecord.gz \
-        --outfile=$(dirname {output.vcf})  >> {log} 2>&1;
+        --infile={output.trf} \
+        --outfile={output.vcf}  >> {log} 2>&1;
 
         touch {output.vcf} >> {log} 2>&1;
         #tabix -p vcf {output.vcf} >> {log} 2>&1;
