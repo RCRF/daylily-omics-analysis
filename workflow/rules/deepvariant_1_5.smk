@@ -85,7 +85,7 @@ rule deepvariant_1_5:
 
 
 
-rule 15_sort_index_chunk_vcf:
+rule deep15_sort_index_chunk_vcf:
     input:
         vcf=MDIR
         + "{sample}/align/{alnr}/snv/deep15/vcfs/{dvchrm}/{sample}.{alnr}.deep15.{dvchrm}.snv.vcf",
