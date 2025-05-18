@@ -11,7 +11,7 @@ rule deepvariant_ultima_make_examples:
         crai=MDIR + "{sample}/align/{alnr}/{sample}.{alnr}.cram.crai",
         d=MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.ready",
     output:
-        examples=MDIR + "{sample}/align/{alnr}/snv/deepug/examples/{dvchrm}{sample}.{alnr}.{dvchrm}.tfrecord@"+f"{config['deepvariant']['threads']}.gz"
+        examples=MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.{dvchrm}.examples.tfrecord@"+f"{config['deepvariant']['threads']}.gz"
     log:
         MDIR + "{sample}/align/{alnr}/snv/deepug/log/{sample}.{alnr}.make_examples.{dvchrm}."+f"{config['deepvariant']['threads']}.log"
     threads: config['deepvariant']['threads']
@@ -57,7 +57,7 @@ rule deepvariant_ultima_make_examples:
         export TMPDIR=/fsx/scratch/deepvariantug2_tmp_$timestamp;
         mkdir -p $TMPDIR;
         APPTAINER_HOME=$TMPDIR;
-        trap "rm -rf \"$TMPDIR\" || echo '$TMPDIR rm fails' >> {log} 2>&1" EXIT;
+        #trap "rm -rf \"$TMPDIR\" || echo '$TMPDIR rm fails' >> {log} 2>&1" EXIT;
         echo "DCHRM: $dchr" >> {log} 2>&1;
         
         {params.numa} \
@@ -81,7 +81,7 @@ rule deepvariant_ultima_make_examples:
 
 rule deepvariant_ultima_call_variants:
     input:
-        examples=MDIR + "{sample}/align/{alnr}/snv/deepug/examples/{dvchrm}{sample}.{alnr}.{dvchrm}.tfrecord@"+f"{config['deepvariant']['threads']}.gz"
+        examples=MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.{dvchrm}.examples.tfrecord@"+f"{config['deepvariant']['threads']}.gz"
     output:
         vcf=MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.deepug.{dvchrm}.snv.vcf.gz",
         #tvcf=temp(MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.deepug.{dvchrm}.snv.tmp.vcf"),
