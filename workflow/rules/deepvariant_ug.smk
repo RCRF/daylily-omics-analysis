@@ -87,7 +87,7 @@ rule deepvariant_ultima_call_variants:
     output:
         trf=MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.deepug.{dvchrm}.snv.tfrecord@"+f"{config['deepvariant']['threads']}.gz",
     log:
-        MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/log/{sample}.{alnr}.call_variants.{dvchrm}."+f"{config['deepvariant']['threads']}".log",
+        MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/log/{sample}.{alnr}.call_variants.{dvchrm}."+f"{config['deepvariant']['threads']}.log",
     threads: config['deepvariant']['threads']
     container:
         config['deepvariant']['deepug_cv_container']
