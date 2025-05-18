@@ -4,13 +4,6 @@ import os
 ##### Clair3
 # ---------------------------
 
-def get_clair_instrument(wildcards):
-    instrument = "na"
-    try:
-        instrument = samples[samples["samp"] == wildcards.sample]["instrument"][0].lower()
-    except Exception as e:
-        instrument = "na"
-    return instrument
 
 def get_clair_model_path(wildcards):
     # using the aligner is a hack, should move this to config and pulled from seq technology
@@ -89,7 +82,7 @@ rule clair3:
         + "{sample}/align/{alnr}/snv/clair3/vcfs/{clairchrm}/{sample}.{alnr}.clair3.{clairchrm}.snv.vcf.gz"
     log:
         MDIR + "{sample}/align/{alnr}/snv/clair3/log/{sample}.{alnr}.clair3.{clairchrm}.snv.log",
-    threads: config['clair3']['threads'] if get_clair_instrument in ['na',None,'None'] else config['clair3']['ont_threads']
+    threads: config['clair3']['threads'] if get_instrument in ['na',None,'None'] else config['clair3']['ont_threads']
     container:
         "docker://hkubal/clair3:latest"
     priority: 45

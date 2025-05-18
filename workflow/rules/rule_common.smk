@@ -792,7 +792,16 @@ def get_deep_model(wildcards):
         print(f"'deep_model' key not found" + str(e), file=sys.stderr)
 
     return deep_model
-    
 
+
+def instrument(wildcards):
+    instrument = "na"
+    try:
+        instrument = samples[samples["samp"] == wildcards.sample]["instrument"][0].lower()
+    except Exception as e:
+        instrument = "na"
+    return instrument
+
+    
 OG_ALIGNERS=list(set(ALIGNERS)-set(CRAM_ALIGNERS))
 ALL_ALIGNERS=list(set(ALIGNERS+CRAM_ALIGNERS))
