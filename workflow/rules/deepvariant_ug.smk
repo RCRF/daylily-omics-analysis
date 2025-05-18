@@ -142,7 +142,7 @@ rule deepvariant_ultima_call_variants:
             --examples={input.examples} \
             --checkpoint={params.checkpoint}             >> {log} 2>&1;
         
-        tabix -p vcf {output.vcf} >> {log} 2>&1;
+        #tabix -p vcf {output.vcf} >> {log} 2>&1;
 
         end_time=$(date +%s);
         elapsed_time=$((($end_time - $start_time) / 60));
