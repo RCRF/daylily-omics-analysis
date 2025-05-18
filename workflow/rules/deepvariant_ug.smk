@@ -67,9 +67,7 @@ rule deepvariant_ultima_make_examples:
             --reads={input.cram} \
             --regions=$dchr \
             --enable_joint_realignment={params.realign} {params.perror} \
-            --examples={output.examples} \
-            --logging_dir=$(dirname {log}) \
-            --dry_run=false >> {log} 2>&1;
+            --examples={output.examples}  >> {log} 2>&1;
 
         
         end_time=$(date +%s);
