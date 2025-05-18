@@ -137,7 +137,6 @@ rule deepvariant_ultima_call_variants:
         /opt/deepvariant/bin/call_variants \
             --outfile={output.trf} \
             --examples={input.examples} \
-            --regions=$dchr \
             --checkpoint={params.checkpoint}             >> {log} 2>&1;
         
 
