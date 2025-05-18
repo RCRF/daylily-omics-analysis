@@ -159,7 +159,13 @@ else:
             ulimit -n 65536 || echo "ulimit mod failed";
 
 
-            samtools fastq  --reference {params.huref} -@ {params.threads}  {input.cram} | gzip > {output.tfq} >> {log} 2>&1;
+
+            # THIS DOES NOT WORK AT ALL DUE TO ULTIMA FASTQ QUALSCORE PECULIARITIES
+
+            samtools view -h -T /fsx/data/genomic_data/organism_references/H_sapiens/hg38/fasta_fai_minalt/GRCh38_no_alt_analysis_set.fasta \
+                     -@ 64 results/day/hg38/R0_HG006_D0_0/align/ug/R0_HG006_D0_0.ug.cram  \
+                | samtools sort -l 1 -m 3G -@ 64 -O BAM -T $tmpdir - \
+                | samtools fastq  --reference /fsx/data/genomic_data/organism_references/H_sapiens/hg38/fasta_fai_minalt/GRCh38_no_alt_analysis_set.fasta -n -@ 32 -o {output.tfq} - 
             
             {params.strobe_cmd} \
             -t {params.strobe_threads} {params.strobe_opts} \
@@ -170,7 +176,7 @@ else:
             --rg=PU:"{params.rgpu}" \
             --rg=CN:"{params.rgcn}" \
             --rg=PG:"{params.rgpg}" \
-            --use-index {params.huref} {output.tfq}  {params.mbuffer} \
+            --use-index {params.huref} -  {params.mbuffer} \
             |  samtools sort \
             -l 1  \
             -m {params.sort_thread_mem}   \
