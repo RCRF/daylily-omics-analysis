@@ -142,12 +142,19 @@ rule deepvariant_ultima_call_variants:
             --examples={input.examples} \
             --checkpoint={params.checkpoint}             >> {log} 2>&1;
         
-        /opt/deepvariant/bin/postprocess_variants \
-        --ref={params.huref} \
-        --infile={output.trf} \
-        --outfile={output.vcf}  >> {log} 2>&1;
 
-        tabix -p vcf {output.vcf} >> {log} 2>&1;
+        dchr=$(echo {params.cpre}{params.dchrm} | sed 's/~/\:/g' | sed 's/23\:/X\:/' | sed 's/24\:/Y\:/' | sed 's/25\:/{params.mito_code}\:/' );
+
+
+        /opt/deepvariant/bin/postprocess_variants -j {threads} \
+        --ref={params.huref} \
+        --regions=$dchr \
+        --sample_name="{params.cluster_sample}" \
+        --infile={output.trf} \
+        --outfile=$(dirname {output.vcf})  >> {log} 2>&1;
+
+        touch {output.vcf} >> {log} 2>&1;
+        #tabix -p vcf {output.vcf} >> {log} 2>&1;
 
         end_time=$(date +%s);
         elapsed_time=$((($end_time - $start_time) / 60));
