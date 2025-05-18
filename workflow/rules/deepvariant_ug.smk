@@ -138,7 +138,7 @@ rule deepvariant_ultima_call_variants:
             --outfile={output.vcf} \
             --examples={input.examples} \
             --checkpoint={params.checkpoint} \
-            --num_shards={params.deep_threads} \
+            --num_input_shards={params.deep_threads} \
             --logging_dir=$(dirname {log}) \
             >> {log} 2>&1;
         
