@@ -59,7 +59,8 @@ rule deepvariant_ultima_make_examples:
         APPTAINER_HOME=$TMPDIR;
         #trap "rm -rf \"$TMPDIR\" || echo '$TMPDIR rm fails' >> {log} 2>&1" EXIT;
         echo "DCHRM: $dchr" >> {log} 2>&1;
-        
+        touch {output.examples} >> {log} 2>&1;
+
         {params.numa} \
         /opt/deepvariant/bin/make_examples \
             --mode calling \
@@ -70,7 +71,8 @@ rule deepvariant_ultima_make_examples:
             --enable_joint_realignment={params.realign} {params.perror} \
             --examples={output.examples}  >> {log} 2>&1;
 
-        
+        touch {output.examples} >> {log} 2>&1;
+                
         end_time=$(date +%s);
         elapsed_time=$((($end_time - $start_time) / 60));
 
