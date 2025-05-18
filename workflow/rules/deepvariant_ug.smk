@@ -138,10 +138,9 @@ rule deepvariant_ultima_call_variants:
 
         {params.numa} \
         /opt/deepvariant/bin/call_variants \
-            --outfile=$(dirname {output.vcf}) \
+            --outfile={output.vcf} \
             --examples={input.examples} \
-            --checkpoint={params.checkpoint} \
-            --num_input_shards={params.deep_threads}             >> {log} 2>&1;
+            --checkpoint={params.checkpoint}             >> {log} 2>&1;
         
         tabix -p vcf {output.vcf} >> {log} 2>&1;
 
