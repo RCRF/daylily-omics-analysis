@@ -113,7 +113,7 @@ rule deepvariant_ultima_call_variants:
         mito_code="MT" if "b37" == config['genome_build'] else "M",
     shell:
         """
-        mkdir -p $(dirname {output.vcf})
+        mkdir -p $(dirname {output.trf})
 
         TOKEN=$(curl -X PUT 'http://169.254.169.254/latest/api/token' -H 'X-aws-ec2-metadata-token-ttl-seconds: 21600');
         itype=$(curl -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/instance-type);
