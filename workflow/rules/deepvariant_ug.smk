@@ -134,7 +134,6 @@ rule deepvariant_ultima_call_variants:
         trap "rm -rf \"$TMPDIR\" || echo '$TMPDIR rm fails' >> {log} 2>&1" EXIT;
         echo "DCHRM: $dchr" >> {log} 2>&1;
         
-        touch {output.vcf} >> {log} 2>&1;
 
         {params.numa} \
         /opt/deepvariant/bin/call_variants \
