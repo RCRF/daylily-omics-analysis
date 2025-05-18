@@ -27,7 +27,7 @@ rule deepvariant_ultima_make_examples:
         MDIR + "{sample}/benchmarks/{sample}.{alnr}.deepug.{dvchrm}."+f"{config['deepvariant']['threads']}.bench.tsv"
     params:
         dchrm=get_dvchrm_day,
-        deep_model="ULTIMA_WGS",
+        deep_model="WGS",
         cluster_sample=ret_sample, #
         huref=config["supporting_files"]["files"]["huref"]["fasta"]["name"],
         mdir=MDIR,
@@ -63,7 +63,6 @@ rule deepvariant_ultima_make_examples:
         {params.numa} \
         /opt/deepvariant/bin/make_examples \
             --mode calling \
-            --model_type={params.deep_model} \
             --ref={params.huref} \
             --reads={input.cram} \
             --regions=$dchr \
@@ -102,6 +101,7 @@ rule deepvariant_ultima_call_variants:
     params:
         checkpoint="/opt/models/ultima_wgs/model.ckpt",
         dchrm=get_dvchrm_day,
+        deep_model=get_deep_model,
         cluster_sample=ret_sample, #
         huref=config["supporting_files"]["files"]["huref"]["fasta"]["name"],
         mdir=MDIR,
@@ -136,6 +136,7 @@ rule deepvariant_ultima_call_variants:
         {params.numa} \
         /opt/deepvariant/bin/call_variants \
             --outfile={output.vcf} \
+            --model_type={params.deep_model} \
             --examples={input.examples} \
             --checkpoint={params.checkpoint} \
             --num_shards={params.deep_threads} \
