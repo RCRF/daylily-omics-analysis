@@ -20,7 +20,7 @@ rule deepvariant_19:
         + "{sample}/align/{alnr}/snv/deep19/log/{sample}.{alnr}.deep19.{dvchrm}.snv.log",
     threads: config['deepvariant']['threads']
     container:
-        "docker://google/deepvariant:1.9.0"  #
+        "docker://google/deepvariant:1.9.0"  # daylilyinformatics/deepvariant-avx512
     priority: 45
     resources:
         vcpu=config['deepvariant']['threads'],

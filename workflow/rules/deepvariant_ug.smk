@@ -99,7 +99,7 @@ rule deepvariant_ultima_call_variants:
         partition=config['deepvariant']['partition'],
         mem_mb=config['deepvariant']['mem_mb'],
     params:
-        checkpoint="/opt/models/ultima_wgs/model.ckpt",
+        checkpoint="/opt/models/wgs/model.ckpt",
         dchrm=get_dvchrm_day,
         deep_model=get_deep_model,
         cluster_sample=ret_sample, #
@@ -136,7 +136,6 @@ rule deepvariant_ultima_call_variants:
         {params.numa} \
         /opt/deepvariant/bin/call_variants \
             --outfile={output.vcf} \
-            --model_type={params.deep_model} \
             --examples={input.examples} \
             --checkpoint={params.checkpoint} \
             --num_shards={params.deep_threads} \
