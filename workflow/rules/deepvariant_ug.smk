@@ -11,9 +11,9 @@ rule deepvariant_ultima_make_examples:
         crai=MDIR + "{sample}/align/{alnr}/{sample}.{alnr}.cram.crai",
         d=MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.ready",
     output:
-        MDIR + "{wildcards.sample}/align/{wildcards.alnr}/snv/deepug/examples/{wildcards.dvchrm}{wildcards.sample}.{wildcards.alnr}.{wildcards.dvchrm}.tfrecord@{threads}.gz"
+        examples=MDIR + "{sample}/align/{alnr}/snv/deepug/examples/{dvchrm}{sample}.{alnr}.{dvchrm}.tfrecord@"+f"{config['deepvariant']['threads']}.gz"
     log:
-        MDIR + "{wildcards.sample}/align/{wildcards.alnr}/snv/deepug/log/{wildcards.sample}.{wildcards.alnr}.make_examples.{wildcards.dvchrm}.{threads}.log"
+        MDIR + "{sample}/align/{alnr}/snv/deepug/log/{sample}.{alnr}.make_examples.{dvchrm}."+f"{config['deepvariant']['threads']}.log"
     threads: config['deepvariant']['threads']
     container:
         "docker://ultimagenomics/make_examples"
@@ -24,7 +24,7 @@ rule deepvariant_ultima_make_examples:
         partition=config['deepvariant']['partition'],
         mem_mb=config['deepvariant']['mem_mb'],
     benchmark:
-        MDIR + "{wildcards.sample}/benchmarks/{wildcards.sample}.{wildcards.alnr}.deepug.{wildcards.dvchrm}.{threads}.bench.tsv"
+        MDIR + "{sample}/benchmarks/{sample}.{alnr}.deepug.{dvchrm}."+f"{config['deepvariant']['threads']}.bench.tsv"
     params:
         dchrm=get_dvchrm_day,
         deep_model="ULTIMA_WGS",
@@ -84,7 +84,7 @@ rule deepvariant_ultima_make_examples:
 
 rule deepvariant_ultima_call_variants:
     input:
-        examples=MDIR + "{wildcards.sample}/align/{wildcards.alnr}/snv/deepug/examples/{wildcards.dvchrm}{wildcards.sample}.{wildcards.alnr}.{wildcards.dvchrm}.tfrecord@{threads}.gz"
+        examples=MDIR + "{sample}/align/{alnr}/snv/deepug/examples/{dvchrm}{sample}.{alnr}.{dvchrm}.tfrecord@"+f"{config['deepvariant']['threads']}.gz"
     output:
         vcf=MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.deepug.{dvchrm}.snv.vcf.gz",
         #tvcf=temp(MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.deepug.{dvchrm}.snv.tmp.vcf"),
@@ -143,11 +143,6 @@ rule deepvariant_ultima_call_variants:
             >> {log} 2>&1;
         
         tabix -p vcf {output.vcf} >> {log} 2>&1;
-
-        #/opt/deepvariant/bin/postprocess_variants \
-        #--ref={params.huref} \
-        #--infile={output.tvcf} \
-        #--outfile={output.vcf}  >> {log} 2>&1;
 
         end_time=$(date +%s);
         elapsed_time=$((($end_time - $start_time) / 60));
