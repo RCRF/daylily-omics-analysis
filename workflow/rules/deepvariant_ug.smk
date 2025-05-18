@@ -147,7 +147,7 @@ rule deepvariant_ultima_call_variants:
         --infile={output.trf} \
         --outfile={output.vcf}  >> {log} 2>&1;
 
-        #tabix -p vcf {output.vcf} >> {log} 2>&1;
+        tabix -p vcf {output.vcf} >> {log} 2>&1;
 
         end_time=$(date +%s);
         elapsed_time=$((($end_time - $start_time) / 60));
@@ -161,7 +161,7 @@ rule deepvariant_ultima_call_variants:
 rule dvug_sort_index_chunk_vcf:
     input:
         vcf=MDIR
-        + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.deepug.{dvchrm}.snv.vcf.tfrecord.gz",
+        + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.deepug.{dvchrm}.snv.vcf.gz",
     priority: 46
     output:
         vcfsort=MDIR
