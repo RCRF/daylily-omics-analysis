@@ -101,7 +101,7 @@ rule sentieon_bwa_sort:  #TARGET: sent bwa sort
         | /fsx/data/cached_envs/sentieon-genomics-202503.01.rc1/bin/sentieon  util sort \
         -t  {params.sort_threads} \
         --reference {params.huref} \
-        --cram_write_options version=3.0,compressor=rans,lazy_quality=true \
+        --cram_write_options version=3.0,compressor=rans \
         --sortblock_thread_count {params.sort_threads} \
         --bam_compression 1 \
 	    --temp_dir $TMPDIR \
