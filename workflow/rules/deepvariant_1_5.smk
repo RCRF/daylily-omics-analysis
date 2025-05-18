@@ -6,7 +6,7 @@ import os
 #
  
 
-rule deepvariant_1_5:
+rule deepvariant_15:
     input:
         cram=MDIR + "{sample}/align/{alnr}/{sample}.{alnr}.cram",
         crai=MDIR + "{sample}/align/{alnr}/{sample}.{alnr}.cram.crai",
