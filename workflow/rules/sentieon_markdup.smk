@@ -75,15 +75,22 @@ if "sent" in DDUP:
                 exit 3;
             fi
 
-            {params.numa} LD_PRELOAD=$LD_PRELOAD /fsx/data/cached_envs/sentieon-genomics-202503.01.rc1/bin/sentieon driver \
-                --input {input.bam} \
-                --reference {params.huref} \
-                --thread_count {threads} \
-                --algo Dedup \
-                --metrics {output.metrics} \
-                --cram_write_options version=3.0,compressor=rans \
-                {output.cram} >> {log} 2>&1
 
+            {params.numa} LD_PRELOAD=$LD_PRELOAD {params.sentieon_bin} driver \
+            --input {input.bam} \
+            --reference {input.ref} \
+            --thread_count {threads} \
+            --algo LocusCollector --fun score_info {output.score} >> {log} 2>&1
+
+            {params.numa} LD_PRELOAD=$LD_PRELOAD {params.sentieon_bin} driver \
+            --input {input.bam} \
+            --reference {input.ref} \
+            --thread_count {threads} \
+            --algo Dedup \
+            --score_info {output.score} \
+            --metrics {output.metrics} \
+            --cram_write_options {params.cram_opts} \
+            {output.cram} >> {log} 2>&1
 
             end_time=$(date +%s);
             elapsed_time=$((($end_time - $start_time) / 60));
