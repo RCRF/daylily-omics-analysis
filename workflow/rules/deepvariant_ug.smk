@@ -86,7 +86,7 @@ rule deepvariant_ultima_call_variants:
         vcf=MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.deepug.{dvchrm}.snv.vcf.gz",
         #tvcf=temp(MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.deepug.{dvchrm}.snv.tmp.vcf"),
     log:
-        MDIR + "{sample}/align/{alnr}/snv/deepug/log/{sample}.{alnr}.call_variants.{dvchrm}.log",
+        MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/log/{sample}.{alnr}.call_variants.{dvchrm}.log",
     threads: config['deepvariant']['threads']
     container:
         "docker://google/deepvariant:1.9.0" #"docker://ultimagenomics/call_variants"
