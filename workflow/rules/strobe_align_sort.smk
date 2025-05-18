@@ -147,9 +147,9 @@ else:
             start_time=$(date +%s);
 
             timestamp=$(date +%Y%m%d%H%M%S);
-            TMPDIR=/fsx/scratch/strobe_tmp_$timestamp;
+            export TMPDIR=/dev/shm/strobe_tmp_$timestamp;
             mkdir -p $TMPDIR;
-            APPTAINER_HOME=$TMPDIR;
+            export APPTAINER_HOME=$TMPDIR;
             trap "rm -rf \"$TMPDIR\" || echo '$TMPDIR rm fails' >> {log} 2>&1" EXIT;
             tdir=$TMPDIR;
 

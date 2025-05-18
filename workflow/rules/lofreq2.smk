@@ -106,11 +106,19 @@ rule lofreq2:
         start_time=$(date +%s);
         dchr=$(echo {params.cpre}{params.dchrm} | sed 's/~/\:/g' | sed 's/23\:/X\:/' | sed 's/24\:/Y\:/' | sed 's/25\:/{params.mito_code}\:/');
 
+        timestamp=$(date +%Y%m%d%H%M%S);
+        export TMPDIR=/dev/shm/lfq2_tmp_$timestamp;
+        mkdir -p $TMPDIR;
+        export APPTAINER_HOME=$TMPDIR;
+
+        trap "rm -rf \"$TMPDIR\" || echo '$TMPDIR rm fails' >> {log} 2>&1" EXIT;
+        tdir=$TMPDIR;
+
         echo "DCHRM: $dchr" >> {log} 2>&1;
         
         if [[ "{params.dchrm}" == "1-24" || "{params.dchrm}" == "1-25" ]]; then
             echo "lofreq parallel" >> {log} 2>&1;
-            lofreq call-parallel --pp-threads {threads}  --max-depth 10000 \
+            lofreq call-parallel --pp-threads {threads}  --max-depth 3000 \
             --force-overwrite \
             -f {params.huref} \
             -o {output.vcf} {input.cram}  >> {log} 2>&1;

@@ -63,9 +63,9 @@ rule deepvariant_19:
 
         timestamp=$(date +%Y%m%d%H%M%S)_$(head /dev/urandom | tr -dc a-zA-Z0-9 | head -c 6)
 
-        TMPDIR=/fsx/scratch/deepvariant_tmp_$timestamp;
+        export TMPDIR=/dev/shm/deepvariant_tmp_$timestamp;
         mkdir -p $TMPDIR;
-        APPTAINER_HOME=$TMPDIR;
+        export APPTAINER_HOME=$TMPDIR;
         trap "rm -rf \"$TMPDIR\" || echo '$TMPDIR rm fails' >> {log} 2>&1" EXIT;
         echo "DCHRM: $dchr" >> {log} 2>&1;
         

@@ -111,8 +111,8 @@ rule octopus:
         """ 
         touch {output.vcf};
         timestamp=$(date +%Y%m%d%H%M%S);
-        TMPDIR=./octo_tmp_$timestamp;
-        APPTAINER_HOME=$TMPDIR;
+        export TMPDIR=/dev/shm/octo_tmp_$timestamp;
+        export APPTAINER_HOME=$TMPDIR;
         trap "sleep 2 && rm -rf \"$TMPDIR\" || echo '$TMPDIR rm fails' >> {log} 2>&1" EXIT;
         
         oochrm_mod=$(echo '{params.ochrm_mod}' | sed 's/~/\:/g' | perl -pe 's/(^23| 23)/ X/g;' | perl -pe 's/(^24| 24)/ Y/g;' | perl -pe 's/(^25| 25)/ {params.mito_code}/g;');

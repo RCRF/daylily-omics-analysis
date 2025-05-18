@@ -121,9 +121,9 @@ rule clair3:
 
 
         timestamp=$(date +%Y%m%d%H%M%S);
-        TMPDIR=/fsx/scratch/clair3_tmp_$timestamp;
+        export TMPDIR=/dev/shm/clair3_tmp_$timestamp;
         mkdir -p $TMPDIR;
-        APPTAINER_HOME=$TMPDIR;
+        export APPTAINER_HOME=$TMPDIR;
         trap "rm -rf $TMPDIR" EXIT;
         tdir=$TMPDIR;
 
