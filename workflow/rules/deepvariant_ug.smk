@@ -85,7 +85,7 @@ rule deepvariant_ultima_call_variants:
     input:
        examples=MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.{dvchrm}.examples.tfrecord@"+f"{config['deepvariant']['threads']}.gz"
     output:
-        trf=MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.deepug.{dvchrm}.snv.tfrecord@"+f"{config['deepvariant']['threads']}.gz",
+        trf=MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.deepug.{dvchrm}.snv."+f"{config['deepvariant']['threads']}.tfrecord.gz",
     log:
         MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/log/{sample}.{alnr}.call_variants.{dvchrm}."+f"{config['deepvariant']['threads']}.log",
     threads: config['deepvariant']['threads']
@@ -113,7 +113,7 @@ rule deepvariant_ultima_call_variants:
         mito_code="MT" if "b37" == config['genome_build'] else "M",
     shell:
         """
-        mkdir -p $(dirname {output.trf})
+        mkdir -p $(dirname {output.trf});
 
         TOKEN=$(curl -X PUT 'http://169.254.169.254/latest/api/token' -H 'X-aws-ec2-metadata-token-ttl-seconds: 21600');
         itype=$(curl -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/instance-type);
