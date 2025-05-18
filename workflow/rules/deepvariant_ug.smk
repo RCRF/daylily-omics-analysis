@@ -175,6 +175,9 @@ rule dvug_sort_index_chunk_vcf:
         threads=4,
         partition=config['deepvariant']['partition_other'],
     params:
+        mem_mb=config['deepvariant']['mem_mb'],
+        numa=config['deepvariant']['numa'],
+        cpre="" if "b37" == config['genome_build'] else "chr",
         dchrm=get_dvchrm_day,
         deep_model=get_deep_model,
         cluster_sample=ret_sample, #
