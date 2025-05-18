@@ -74,16 +74,21 @@ if "sent" in DDUP:
                 echo "libjemalloc not found in the active conda environment $CONDA_PREFIX.";
                 exit 3;
             fi
-            {params.numa} LD_PRELOAD=$LD_PRELOAD  /fsx/data/cached_envs/sentieon-genomics-202503.01.rc1/bin/sentieon driver \
-             --input {input.bam} \
-             --reference {params.huref} \
-             --thread_count {threads} \
-             --interval_padding 0 \
-             --algo Dedup \
-             --score_info {output.score} \
-             --cram_write_options version=3.0,compressor=rans \
-             --metrics {output.metrics} \
-            {output.cram} >> {log} 2>&1;
+            
+            {params.numa} LD_PRELOAD=$LD_PRELOAD /fsx/data/cached_envs/sentieon-genomics-202503.01.rc1/bin/sentieon driver \
+                --input {input.bam} \
+                --reference {params.huref} \
+                --thread_count {threads} \
+                --algo MarkDup \
+                --metrics {output.metrics} \
+                --interval_padding 0 \
+                --cram_write_options version=3.0,compressor=rans \
+                {output.cram} >> {log} 2>&1
 
+
+            end_time=$(date +%s);
+            elapsed_time=$((($end_time - $start_time) / 60));
+            echo "Elapsed-Time-min:\t$itype\t$elapsed_time\n";
+            echo "Elapsed-Time-min:\t$itype\t$elapsed_time" >> {log} 2>&1;
 
             """
