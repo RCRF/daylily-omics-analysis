@@ -41,10 +41,11 @@ rule deepvariant_ultima_make_examples:
         perror=" --p_error=0.005 " if  get_instrument in ["ultima","ug"] else "",
     shell:
         """
+        mkdir -p $(dirname {output.examples})
+
         TOKEN=$(curl -X PUT 'http://169.254.169.254/latest/api/token' -H 'X-aws-ec2-metadata-token-ttl-seconds: 21600');
         itype=$(curl -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/instance-type);
         echo "INSTANCE TYPE: $itype" > {log};
-        mkdir -p $(dirname {output.examples})
         
         # Log the start time as 0 seconds
         start_time=$(date +%s);
@@ -54,12 +55,11 @@ rule deepvariant_ultima_make_examples:
 
         timestamp=$(date +%Y%m%d%H%M%S)_$(head /dev/urandom | tr -dc a-zA-Z0-9 | head -c 6)
 
-        export TMPDIR=/fsx/scratch/deepvariantug2_tmp_$timestamp;
+        export TMPDIR=/dev/shm/deepvariant_tmp_$timestamp;
         mkdir -p $TMPDIR;
-        APPTAINER_HOME=$TMPDIR;
-        #trap "rm -rf \"$TMPDIR\" || echo '$TMPDIR rm fails' >> {log} 2>&1" EXIT;
+        export APPTAINER_HOME=$TMPDIR;
+        trap "rm -rf \"$TMPDIR\" || echo '$TMPDIR rm fails' >> {log} 2>&1" EXIT;
         echo "DCHRM: $dchr" >> {log} 2>&1;
-        touch {output.examples} >> {log} 2>&1;
 
         {params.numa} \
         /opt/deepvariant/bin/make_examples \
@@ -128,12 +128,11 @@ rule deepvariant_ultima_call_variants:
 
         timestamp=$(date +%Y%m%d%H%M%S)_$(head /dev/urandom | tr -dc a-zA-Z0-9 | head -c 6)
 
-        export TMPDIR=/fsx/scratch/deepvariantug2_tmp_$timestamp;
+        export TMPDIR=/dev/shm/deepvariant_tmp_$timestamp;
         mkdir -p $TMPDIR;
         export APPTAINER_HOME=$TMPDIR;
         trap "rm -rf \"$TMPDIR\" || echo '$TMPDIR rm fails' >> {log} 2>&1" EXIT;
         echo "DCHRM: $dchr" >> {log} 2>&1;
-        
 
         {params.numa} \
         /opt/deepvariant/bin/call_variants \
@@ -141,9 +140,6 @@ rule deepvariant_ultima_call_variants:
             --examples={input.examples} \
             --checkpoint={params.checkpoint}             >> {log} 2>&1;
         
-
-        dchr=$(echo {params.cpre}{params.dchrm} | sed 's/~/\:/g' | sed 's/23\:/X\:/' | sed 's/24\:/Y\:/' | sed 's/25\:/{params.mito_code}\:/' );
-
 
         /opt/deepvariant/bin/postprocess_variants -j {threads} \
         --ref={params.huref} \
@@ -155,14 +151,16 @@ rule deepvariant_ultima_call_variants:
         touch {output.vcf} >> {log} 2>&1;
         #tabix -p vcf {output.vcf} >> {log} 2>&1;
 
+
         end_time=$(date +%s);
         elapsed_time=$((($end_time - $start_time) / 60));
 
         # Log the elapsed time
         echo "Elapsed-Time-min:\t$itype\t$elapsed_time" >> {log} 2>&1;
+
         """
 
-
+ 
 
 rule dvug_sort_index_chunk_vcf:
     input:
