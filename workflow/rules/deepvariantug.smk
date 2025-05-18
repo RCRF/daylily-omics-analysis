@@ -5,52 +5,6 @@ import os
 # ---------------------------
 #
  
-def get_dvchrmug_day(wildcards):
-    pchr="" #prefix handled already
-    ret_str = ""
-    sl = wildcards.dvchrm.replace('chr','').split("-")
-    sl2 = wildcards.dvchrm.replace('chr','').split("~")
-    
-    if len(sl2) == 2:
-        ret_str = pchr + wildcards.dvchrm
-    elif len(sl) == 1:
-        ret_str = pchr + sl[0]
-    elif len(sl) == 2:
-        start = int(sl[0])
-        end = int(sl[1])
-        while start <= end:
-            ret_str = str(ret_str) + " " + pchr + str(start)
-            start = start + 1
-    else:
-        raise Exception(
-            "deep chunks can only be one contiguous range per chunk : ie: 1-4 with the non numerical chrms assigned 23=X, 24=Y, 25=MT"
-        )
-
-    return ret_mod_chrm(ret_str)
-
-
-def get_deepug_model(wildcards):
-    deep_model="WGS"
-
-    try:
-        deep_model = samples[samples["samp"] == wildcards.sample]["deep_model"][0]
-    except Exception as e:
-        print(f"'deep_model' key not found" + str(e), file=sys.stderr)
-
-    return deep_model
-
-def make_examples_output(wildcards):
-    shard_count = config["deepvariant"]["deep_threads"]
-    return MDIR + f"{wildcards.sample}/align/{wildcards.alnr}/snv/deepug/examples/{wildcards.dvchrm}/{wildcards.sample}.{wildcards.alnr}.{wildcards.dvchrm}.tfrecord@{shard_count}.gz"
-
-def make_examples_log(wildcards):
-    shard_count = config["deepvariant"]["deep_threads"]
-    return MDIR + f"{wildcards.sample}/align/{wildcards.alnr}/snv/deepug/log/{wildcards.sample}.{wildcards.alnr}.make_examples.{wildcards.dvchrm}.{shard_count}.log"
-
-def make_examples_benchmark(wildcards):
-    shard_count = config["deepvariant"]["deep_threads"]
-    return MDIR + f"{wildcards.sample}/benchmarks/{wildcards.sample}.{wildcards.alnr}.deepug.{wildcards.dvchrm}.{shard_count}.bench.tsv"
-
 rule deepvariant_ultima_make_examples:
     input:
         cram=MDIR + "{sample}/align/{alnr}/{sample}.{alnr}.cram",
@@ -143,7 +97,7 @@ rule deepvariant_ultima_call_variants:
         mem_mb=config['deepvariant']['mem_mb'],
     params:
         checkpoint="/opt/models/ultima_wgs/model.ckpt",
-        dchrm=get_dvchrmug_day,
+        dchrm=get_dvchrm_day,
         cluster_sample=ret_sample, #
         huref=config["supporting_files"]["files"]["huref"]["fasta"]["name"],
         mdir=MDIR,
@@ -152,7 +106,6 @@ rule deepvariant_ultima_call_variants:
         cpre="" if "b37" == config['genome_build'] else "chr",
         deep_threads=config['deepvariant']['deep_threads'],
         mito_code="MT" if "b37" == config['genome_build'] else "M",
-        deep_model=get_deepug_model,
     shell:
         """
         mkdir -p $(dirname {output.vcf})
