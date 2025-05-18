@@ -600,9 +600,11 @@ sentieon_markdups:
     threads: 7
     ulimit: " ulimit -Sn 810000 "
     env_yaml: "../envs/sentieon_v0.1.yaml"
-    numactl: ""
+    numactl: " "
     ld_preload: " "
     partition: "i8"
+    max_mem: "10G"
+    sort_thread_mem: "100M"
 
 stargazer:
     threads: 7

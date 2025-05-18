@@ -25,11 +25,13 @@ if "sent" in DDUP:
         params:
             cluster_sample=ret_sample,
 	        huref=config["supporting_files"]["files"]["huref"]["fasta"]["name"],
+            max_mem=config["sentieon_markdups"]["max_mem"],
+            numa=config['sentieon_markdups']['numa'],
         resources:
-            threads=config['sentieon']['threads'],
-            partition=config['sentieon']['partition'],
-            vcpu=config['sentieon']['threads'],
-            mem_mb="160G",
+            threads=config['sentieon_markdups']['threads'],
+            partition=config['sentieon_markdups']['partition'],
+            vcpu=config['sentieon_markdups']['threads'],
+            mem_mb=config['sentieon_markdups']['max_mem'],
         log:
             "{MDIR}{sample}/align/{alnr}/logs/dedupe.{sample}.{alnr}.log",
         shell:
@@ -72,7 +74,7 @@ if "sent" in DDUP:
                 echo "libjemalloc not found in the active conda environment $CONDA_PREFIX.";
                 exit 3;
             fi
-            LD_PRELOAD=$LD_PRELOAD  /fsx/data/cached_envs/sentieon-genomics-202503.01.rc1/bin/libexec/driver \
+            {params.numa} LD_PRELOAD=$LD_PRELOAD  /fsx/data/cached_envs/sentieon-genomics-202503.01.rc1/bin/libexec/driver \
              --input {input.bam} \
              --reference {params.huref} \
              --thread_count {threads} \

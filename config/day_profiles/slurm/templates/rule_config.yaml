@@ -605,13 +605,15 @@ sentieon:
 
 
 sentieon_markdups:
-    threads: 32
+    threads: 192
     ulimit: " ulimit -Sn 810000 "
     env_yaml: "../envs/sentieon_v0.1.yaml"
     glances: " "
-    numactl: "none"
-    ld_preload: "  "
+    ld_preload: " "
+    numactl: "  OMP_NUM_THREADS=192 OMP_PROC_BIND=close OMP_PLACES=threads OMP_DYNAMIC=true OMP_MAX_ACTIVE_LEVELS=1 OMP_SCHEDULE=dynamic OMP_WAIT_POLICY=ACTIVE "
     partition: "i192,i192mem"
+    max_mem: "200G"
+    sort_thread_mem: "100M"
 
 stargazer:
     threads: 16
