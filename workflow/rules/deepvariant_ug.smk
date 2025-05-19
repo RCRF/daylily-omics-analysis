@@ -159,6 +159,7 @@ rule dvug_sort_index_chunk_vcf:
         + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.deepug.{dvchrm}.snv.sort.vcf.gz",
         vcftbi=MDIR
         + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.deepug.{dvchrm}.snv.sort.vcf.gz.tbi",
+        trftmp=temp(MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.deepug.{dvchrm}.snv.vars.tfrecord.gz"),
     container:
         config['deepvariant']['deepug_cv_container']
     log:
@@ -189,7 +190,7 @@ rule dvug_sort_index_chunk_vcf:
         --ref={params.huref} \
         --regions=$dchr \
         --sample_name="{params.cluster_sample}" \
-        --infile={input.trf} \
+        --infile={output.trftmp} \
         --outfile={output.vcfgz}  >> {log} 2>&1;
 
         tabix -f -p vcf {output.vcfgz} >> {log} 2>&1;
