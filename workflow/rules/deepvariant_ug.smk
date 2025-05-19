@@ -182,7 +182,6 @@ rule dvug_sort_index_chunk_vcf:
     threads: 4 #config["config"]["sort_index_deepDna_chunk_vcf"]['threads']
     shell:
         """
-        #bedtools sort -header -i input.vcf > {output.vcfsort} 2>> {log};
 
         dchr=$(echo {params.cpre}{params.dchrm} | sed 's/~/\:/g' | sed 's/23\:/X\:/' | sed 's/24\:/Y\:/' | sed 's/25\:/{params.mito_code}\:/' );
 
