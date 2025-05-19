@@ -85,7 +85,7 @@ rule deepvariant_ultima_call_variants:
     input:
        examples=MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.{dvchrm}.examples.tfrecord@"+f"{config['deepvariant']['threads']}.gz"
     output:
-        trf=MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.deepug.{dvchrm}.snv.vars.tfrecord@"+f"{config['deepvariant']['threads']}.gz",
+        trf=MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.deepug.{dvchrm}.snv.vars@"+f"{config['deepvariant']['threads']}.tfrecord.gz",
     log:
         MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/log/{sample}.{alnr}.call_variants.{dvchrm}."+f"{config['deepvariant']['threads']}.log",
     threads: config['deepvariant']['threads']
@@ -152,13 +152,14 @@ rule deepvariant_ultima_call_variants:
 
 rule dvug_sort_index_chunk_vcf:
     input:
-        trf=MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.deepug.{dvchrm}.snv.vars.tfrecord@"+f"{config['deepvariant']['threads']}.gz",
+        trf=MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.deepug.{dvchrm}.snv.vars@"+f"{config['deepvariant']['threads']}.tfrecord.gz",
     priority: 46
     output:
         vcfgz=MDIR
         + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.deepug.{dvchrm}.snv.sort.vcf.gz",
         vcftbi=MDIR
         + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.deepug.{dvchrm}.snv.sort.vcf.gz.tbi",
+        trftmp=temp(MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.deepug.{dvchrm}.snv.vars@1.tfrecord.gz"),
     container:
         config['deepvariant']['deepug_cv_container']
     log:
@@ -189,7 +190,7 @@ rule dvug_sort_index_chunk_vcf:
         --ref={params.huref} \
         --regions=$dchr \
         --sample_name="{params.cluster_sample}" \
-        --infile={input.trf} \
+        --infile={output.trftmp} \
         --outfile={output.vcfgz}  >> {log} 2>&1;
 
         tabix -f -p vcf {output.vcfgz} >> {log} 2>&1;
