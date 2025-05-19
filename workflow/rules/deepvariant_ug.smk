@@ -85,7 +85,7 @@ rule deepvariant_ultima_call_variants:
     input:
        examples=MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.{dvchrm}.examples.tfrecord@"+f"{config['deepvariant']['threads']}.gz"
     output:
-        trf=MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.deepug.{dvchrm}.snv.vars.@"+f"{config['deepvariant']['threads']}.tfrecord.gz",
+        trf=MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.deepug.{dvchrm}.snv.vars.tfrecord@"+f"{config['deepvariant']['threads']}.gz",
     log:
         MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/log/{sample}.{alnr}.call_variants.{dvchrm}."+f"{config['deepvariant']['threads']}.log",
     threads: config['deepvariant']['threads']
@@ -152,7 +152,7 @@ rule deepvariant_ultima_call_variants:
 
 rule dvug_sort_index_chunk_vcf:
     input:
-        trf=MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.deepug.{dvchrm}.snv.vars.@"+f"{config['deepvariant']['threads']}.tfrecord.gz",
+        trf=MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.deepug.{dvchrm}.snv.vars.tfrecord@"+f"{config['deepvariant']['threads']}.gz",
     priority: 46
     output:
         vcfgz=MDIR
