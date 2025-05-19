@@ -189,7 +189,7 @@ rule dvug_sort_index_chunk_vcf:
         --ref={params.huref} \
         --regions=$dchr \
         --sample_name="{params.cluster_sample}" \
-        --infile={output.trftmp} \
+        --infile={input.trf} \
         --outfile={output.vcfgz}  >> {log} 2>&1;
 
         tabix -f -p vcf {output.vcfgz} >> {log} 2>&1;
