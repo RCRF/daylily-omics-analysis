@@ -85,7 +85,7 @@ rule deepvariant_ultima_call_variants:
     input:
        examples=MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.{dvchrm}.examples.tfrecord@"+f"{config['deepvariant']['threads']}.gz"
     output:
-        trf=MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.deepug.{dvchrm}.snv."+f"{config['deepvariant']['threads']}.tfrecord.gz",
+        trf=MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.deepug.{dvchrm}.snv.vars.@"+f"{config['deepvariant']['threads']}.tfrecord.gz",
     log:
         MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/log/{sample}.{alnr}.call_variants.{dvchrm}."+f"{config['deepvariant']['threads']}.log",
     threads: config['deepvariant']['threads']
@@ -152,17 +152,13 @@ rule deepvariant_ultima_call_variants:
 
 rule dvug_sort_index_chunk_vcf:
     input:
-        trf=MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.deepug.{dvchrm}.snv."+f"{config['deepvariant']['threads']}.tfrecord.gz",
+        trf=MDIR + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.deepug.{dvchrm}.snv.vars.@"+f"{config['deepvariant']['threads']}.tfrecord.gz",
     priority: 46
     output:
-        vcfsort=MDIR
-        + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.deepug.{dvchrm}.snv.sort.vcf",
         vcfgz=MDIR
         + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.deepug.{dvchrm}.snv.sort.vcf.gz",
         vcftbi=MDIR
         + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.deepug.{dvchrm}.snv.sort.vcf.gz.tbi",
-        vcf=MDIR
-        + "{sample}/align/{alnr}/snv/deepug/vcfs/{dvchrm}/{sample}.{alnr}.deepug.{dvchrm}.snv.vcf.gz",
     container:
         config['deepvariant']['deepug_cv_container']
     log:
@@ -187,10 +183,6 @@ rule dvug_sort_index_chunk_vcf:
     shell:
         """
         #bedtools sort -header -i input.vcf > {output.vcfsort} 2>> {log};
-        #bgzip {output.vcfsort} >> {log} 2>&1;     
-        #touch {output.vcfsort};
-        #tabix -f -p vcf {output.vcfgz} >> {log} 2>&1;
-
 
         dchr=$(echo {params.cpre}{params.dchrm} | sed 's/~/\:/g' | sed 's/23\:/X\:/' | sed 's/24\:/Y\:/' | sed 's/25\:/{params.mito_code}\:/' );
 
@@ -199,8 +191,9 @@ rule dvug_sort_index_chunk_vcf:
         --regions=$dchr \
         --sample_name="{params.cluster_sample}" \
         --infile={input.trf} \
-        --outfile={output.vcf}  >> {log} 2>&1;
+        --outfile={output.vcfgz}  >> {log} 2>&1;
 
+        tabix -f -p vcf {output.vcfgz} >> {log} 2>&1;
         touch {output} >> {log} 2>&1;
 
         """
