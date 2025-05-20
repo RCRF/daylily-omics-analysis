@@ -5,7 +5,8 @@ export SNAKEMAKE_SINGULARITY_CMD="apptainer"
 
 timestamp=$(date +%Y%m%d%H%M%S);
 
-export TMPDIR=/fsx/scratch/day_run_$timestamp;
+CONFIG_FILE=~/.config/daylily/daylily_cli_global.yaml
+export TMPDIR=$(yq -r '.daylily.sentieon_tmpdir' "$CONFIG_FILE")
 mkdir -p $TMPDIR;
 export TMP=$TMPDIR
 export TEMP=$TMPDIR
