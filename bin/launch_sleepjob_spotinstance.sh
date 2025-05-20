@@ -13,7 +13,7 @@ usage() {
 # Set default values
 COMMENT="RnD"
 PARTITION="i8"
-THREADS=$(nproc)
+THREADS=1
 
 while getopts ":c:p:t:h" opt; do
     case ${opt} in
