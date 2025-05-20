@@ -123,7 +123,7 @@ localrules: produce_sentieon_gatk_bsqr,
 
 rule produce_sentieon_gatk_bsqr:  # TARGET: produce_sentieon_bwa_sort_bam
      input:
-         expand(MDIR + "{sample}/align/{alnr}/snv/gatk/{sample}.{alnr}.gatk.bsqr.recal.cram", sample=SAMPS, alnr=ALNRS)
+         expand(MDIR + "{sample}/align/{alnr}/snv/gatk/{sample}.{alnr}.gatk.bsqr.recal.cram", sample=SAMPS, alnr=ALIGNERS)
 
 
 
