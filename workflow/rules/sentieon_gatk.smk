@@ -219,7 +219,7 @@ rule sentieon_gatk_snv:  #TARGET: sent bwa sort
             -r {params.huref} \
             -i {input.cram} \
             --algo Haplotyper \
-            --emit_mode vcf \
+            --emit_mode confident \
             {output.vcftmp} >> {log} 2>&1;
 
         bcftools sort -O v -o {output.vcfsort}  {output.vcftmp} >> {log} 2>&1;
