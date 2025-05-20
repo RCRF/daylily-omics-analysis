@@ -10,7 +10,6 @@ rule sentieon_gatk_bsqr:  #TARGET: sent bwa sort
     input:
         cram=MDIR + "{sample}/align/{alnr}/{sample}.{alnr}.cram",
         crai=MDIR + "{sample}/align/{alnr}/{sample}.{alnr}.cram.crai",
-        d=MDIR + "{sample}/align/{alnr}/snv/deep19/vcfs/{dvchrm}/{sample}.ready",
     output:
         recal_data_table=MDIR + "{sample}/align/{alnr}/snv/gatk/{sample}.{alnr}.gatk.bsqr.recal_data.table",
         recal_cram=MDIR + "{sample}/align/{alnr}/snv/gatk/{sample}.{alnr}.gatk.bsqr.recal.cram",
