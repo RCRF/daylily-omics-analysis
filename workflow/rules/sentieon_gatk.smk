@@ -31,11 +31,11 @@ rule sentieon_gatk_bsqr:  #TARGET: sent bwa sort
         dbsnp=config["supporting_files"]["files"]["gatk"]["dbsnp_vcf"],
         onekg=config["supporting_files"]["files"]["gatk"]["onekg_vcf"],
         max_mem="130G"
-        if "max_mem" not in config["sentieon"]
-        else config["sentieon"]["max_mem"],
-        sent_opts=config["sentieon"]["sent_opts"],
+        if "max_mem" not in config['sentieon_gatk']
+        else config['sentieon_gatk']["max_mem"],
+        sent_opts=config['sentieon_gatk']["sent_opts"],
         cluster_sample=ret_sample,
-        bwa_threads=config["sentieon"]["bwa_threads"],
+        bwa_threads=config['sentieon_gatk']["bwa_threads"],
         rgpl="presumedILLUMINA",  # ideally: passed in technology # nice to get to this point: https://support.sentieon.com/appnotes/read_groups/ :\ : note, the default sample name contains the RU_EX_SQ_Lane (0 for combined)
         rgpu="presumedCombinedLanes",  # ideally flowcell_lane(s)
         rgsm=ret_sample,  # samplename
@@ -51,7 +51,7 @@ rule sentieon_gatk_bsqr:  #TARGET: sent bwa sort
         subsample_head=get_subsample_head,
         subsample_tail=get_subsample_tail,
     conda:
-        config["sentieon"]["env_yaml"]
+        config['sentieon_gatk']["env_yaml"]
     shell:
         """
 
@@ -152,11 +152,11 @@ rule sentieon_gatk_snv:  #TARGET: sent bwa sort
         dbsnp=config["supporting_files"]["files"]["gatk"]["dbsnp_vcf"],
         onekg=config["supporting_files"]["files"]["gatk"]["onekg_vcf"],
         max_mem="130G"
-        if "max_mem" not in config["sentieon"]
-        else config["sentieon"]["max_mem"],
-        sent_opts=config["sentieon"]["sent_opts"],
+        if "max_mem" not in config['sentieon_gatk']
+        else config['sentieon_gatk']["max_mem"],
+        sent_opts=config['sentieon_gatk']["sent_opts"],
         cluster_sample=ret_sample,
-        bwa_threads=config["sentieon"]["bwa_threads"],
+        bwa_threads=config['sentieon_gatk']["bwa_threads"],
         rgpl="presumedILLUMINA",  # ideally: passed in technology # nice to get to this point: https://support.sentieon.com/appnotes/read_groups/ :\ : note, the default sample name contains the RU_EX_SQ_Lane (0 for combined)
         rgpu="presumedCombinedLanes",  # ideally flowcell_lane(s)
         rgsm=ret_sample,  # samplename
@@ -172,7 +172,7 @@ rule sentieon_gatk_snv:  #TARGET: sent bwa sort
         subsample_head=get_subsample_head,
         subsample_tail=get_subsample_tail,
     conda:
-        config["sentieon"]["env_yaml"]
+        config['sentieon_gatk']["env_yaml"]
     shell:
         """
         if [ -z "$SENTIEON_LICENSE" ]; then
