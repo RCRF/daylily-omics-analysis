@@ -51,7 +51,8 @@ rule deepvariant_15:
         itype=$(curl -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/instance-type);
         echo "INSTANCE TYPE: $itype" > {log};
 
-        
+        ulimit -n 65536 || echo "ulimit mod failed" > {log} 2>&1;
+
         # Log the start time as 0 seconds
         start_time=$(date +%s);
         echo "Start-Time-sec:$itype\t0" >> {log} 2>&1;

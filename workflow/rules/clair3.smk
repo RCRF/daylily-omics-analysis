@@ -119,9 +119,10 @@ rule clair3:
         echo "INSTANCE TYPE: $itype" > {log};
 
 
+        ulimit -n 65536 || echo "ulimit mod failed" > {log} 2>&1;
 
         timestamp=$(date +%Y%m%d%H%M%S);
-        export TMPDIR=/dev/shm/clair3_tmp_$timestamp;
+        export TMPDIR=/fsx/scratch/clair3_tmp_$timestamp;
         mkdir -p $TMPDIR;
         export APPTAINER_HOME=$TMPDIR;
         trap "rm -rf $TMPDIR" EXIT;
