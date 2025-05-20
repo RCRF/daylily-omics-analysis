@@ -149,7 +149,7 @@ rule sentieon_gatk_snv:  #TARGET: sent bwa sort
     params:
         huref=config["supporting_files"]["files"]["huref"]["fasta"]["name"],
         mills=config["supporting_files"]["files"]["gatk"]["mills_vcf"],
-        dbsnp138=config["supporting_files"]["files"]["gatk"]["dbsnp_vcf"],
+        dbsnp=config["supporting_files"]["files"]["gatk"]["dbsnp_vcf"],
         onekg=config["supporting_files"]["files"]["gatk"]["onekg_vcf"],
         max_mem="130G"
         if "max_mem" not in config["sentieon"]
