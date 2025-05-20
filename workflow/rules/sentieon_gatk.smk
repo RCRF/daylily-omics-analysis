@@ -103,7 +103,7 @@ rule sentieon_gatk_bsqr:  #TARGET: sent bwa sort
             -k {params.dbsnp} \
             -k {params.onekg} \
             -k {params.mills} \
-            {output.recal_data_table}
+            {output.recal_data_table} >> {log} 2>&1;
 
         LD_PRELOAD=$LD_PRELOAD /fsx/data/cached_envs/sentieon-genomics-202503.01.rc1/bin/sentieon driver \
             -t {threads} \
@@ -111,7 +111,9 @@ rule sentieon_gatk_bsqr:  #TARGET: sent bwa sort
             -i {input.cram} \
             -q {output.recal_data_table} \
             --algo ReadWriter \
-            {output.recal_cram}
+            {output.recal_cram} >> {log} 2>&1;
+
+        touch {output};
         """
 
 localrules: produce_sentieon_gatk_bsqr,
@@ -124,8 +126,8 @@ rule produce_sentieon_gatk_bsqr:  # TARGET: produce_sentieon_bwa_sort_bam
 
 rule sentieon_gatk_snv:  #TARGET: sent bwa sort
     input:
-        recal_cram=MDIR + "{sample}/align/{alnr}/snv/gatk/{sample}.{alnr}.gatk.bsqr.recal.cram",
-        recal_cram_crai=MDIR + "{sample}/align/{alnr}/snv/gatk/{sample}.{alnr}.gatk.bsqr.recal.cram.crai",
+        cram=MDIR + "{sample}/align/{alnr}/snv/gatk/{sample}.{alnr}.gatk.bsqr.recal.cram",
+        cram_crai=MDIR + "{sample}/align/{alnr}/snv/gatk/{sample}.{alnr}.gatk.bsqr.recal.cram.crai",
     output:
         vcfgz=MDIR + "{sample}/align/{alnr}/snv/gatk/{sample}.{alnr}.gatk.snv.sort.vcf.gz",
         vcfgz_tbi=MDIR + "{sample}/align/{alnr}/snv/gatk/{sample}.{alnr}.gatk.snv.sort.vcf.gz.tbi",
@@ -216,11 +218,12 @@ rule sentieon_gatk_snv:  #TARGET: sent bwa sort
             -i {input.cram} \
             --algo Haplotyper \
             --emit_mode vcf \
-            {output.vcftmp} 
+            {output.vcftmp} >> {log} 2>&1;
 
         bedtools sort -header -i {output.vcftmp} > {output.vcfsort} 2>> {log};
         
         bgzip {output.vcfsort} >> {log} 2>&1;     
 
         tabix -f -p vcf {output.vcfgz} >> {log} 2>&1; 
+        touch {output};
         """
