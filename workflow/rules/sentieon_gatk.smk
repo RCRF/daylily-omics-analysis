@@ -113,7 +113,10 @@ rule sentieon_gatk_bsqr:  #TARGET: sent bwa sort
             --algo ReadWriter \
             {output.recal_cram} >> {log} 2>&1;
 
-        touch {output};
+
+        samtools index {output.recal_cram} {output.recal_cram_crai} >> {log} 2>&1;
+        
+        
         """
 
 localrules: produce_sentieon_gatk_bsqr,
@@ -220,7 +223,7 @@ rule sentieon_gatk_snv:  #TARGET: sent bwa sort
             --emit_mode vcf \
             {output.vcftmp} >> {log} 2>&1;
 
-        bedtools sort -header -i {output.vcftmp} > {output.vcfsort} 2>> {log};
+        bcftools sort -O v -o {output.vcfsort}  {output.vcftmp} >> {log} 2>&1;
         
         bgzip {output.vcfsort} >> {log} 2>&1;     
 
