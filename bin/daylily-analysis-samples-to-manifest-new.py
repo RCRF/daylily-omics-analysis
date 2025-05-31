@@ -104,10 +104,10 @@ def parse_and_validate_tsv(input_file, stage_target):
             log_error(f"Invalid LANE=0 for multi-lane sample: {sample_key}")
 
         print("xxxxx",sample_key, entries)
-        if len(sample_key[0].split("_")) + len(sample_key[1].split("_")) + len(sample_key[2].split("_")) + len(sample_key[3].split("_")) + len(sample_key[4].split("_")) + len(sample_key[5].split("_")) + len(sample_key[6].split("_")) + len(sample_key[7].split("_")) != 0:
-            log_warn(f"RUN_ID, SAMPLE_ID, SAMPLE_ANNO, SAMPLE_TYPE, LIB_PREP, SEQ_PLATFORM, LANE, SEQBC_ID must not contain underscores: {sample_key}\n")
-            #log_error(f"RUN_ID  SAMPLE_ID  SAMPLE_ANNO     SAMPLE_TYPE     LIB_PREP        SEQ_PLATFORM    LANE    SEQBC_ID must not contain underscores: {sample_key}\n")
-            #raise Exception(f"RUN_ID  SAMPLE_ID  SAMPLE_ANNO     SAMPLE_TYPE     LIB_PREP        SEQ_PLATFORM    LANE    SEQBC_ID  must not contain underscores: {sample_key}\n")
+        if len(sample_key[0].split("_")) + len(sample_key[1].split("_")) + len(sample_key[2].split("_")) + len(sample_key[3].split("_")) + len(sample_key[4].split("_")) + len(sample_key[5].split("_")) + len(entries[0][6].split("_")) + len(entries[0][7].split("_")) != 0:
+            log_warn(f"RUN_ID, SAMPLE_ID, SAMPLE_ANNO, SAMPLE_TYPE, LIB_PREP, SEQ_PLATFORM, LANE, SEQBC_ID must not contain underscores: {sample_key} .. {entries}\n")
+            #log_error(f"RUN_ID  SAMPLE_ID  SAMPLE_ANNO     SAMPLE_TYPE     LIB_PREP        SEQ_PLATFORM    LANE    SEQBC_ID must not contain underscores: {sample_key} .. {entries}\n")
+            #raise Exception(f"RUN_ID  SAMPLE_ID  SAMPLE_ANNO     SAMPLE_TYPE     LIB_PREP        SEQ_PLATFORM    LANE    SEQBC_ID  must not contain underscores: {sample_key} .. {entries}\n")
             
         ruid = sample_key[0].replace("_", "-")
         sampleid = sample_key[1].replace("_", "-")
@@ -115,8 +115,8 @@ def parse_and_validate_tsv(input_file, stage_target):
         sampletype = sample_key[3].replace("_", "-")
         libprep = sample_key[4].replace("_", "-")
         seqplatform = sample_key[5].replace("_", "-")
-        lane = sample_key[6].replace("_", "-")
-        seqbc = sample_key[7].replace("_", "-")
+        lane = entries[0][6].replace("_", "-")
+        seqbc = entries[0][7].replace("_", "-")
         
         # RU_sampleid_seqbc_lane(always 0 in this script output)
         new_sample_id = f"{sampleid}-{seqplatform}-{libprep}-{sampletype}-{sampleanno}"
