@@ -134,8 +134,10 @@ def parse_and_validate_tsv(input_file, stage_target):
             tmp_r1_files = []
             tmp_r2_files = []
 
+            log_info(f"Processing multi-lane sample: {sample_prefix} with R1 files: {r1_files} and R2 files: {r2_files}")
             # Download S3 files locally first if they're from S3
             for idx, (r1, r2) in enumerate(zip(r1_files, r2_files)):
+                log_info(f"Downloading R1: {r1}, R2: {r2} for sample {sample_prefix}")
                 local_r1 = os.path.join(staged_sample_path, f"tmp_{idx}_R1.fastq.gz")
                 local_r2 = os.path.join(staged_sample_path, f"tmp_{idx}_R2.fastq.gz")
                 copy_files_to_target(r1, local_r1)
@@ -143,8 +145,11 @@ def parse_and_validate_tsv(input_file, stage_target):
                 tmp_r1_files.append(local_r1)
                 tmp_r2_files.append(local_r2)
 
+            log_info(f"Concatenating R1 files: {tmp_r1_files} into {merged_r1}")
             # Concatenate the downloaded local files
             subprocess.run(f"cat {' '.join(tmp_r1_files)} > {merged_r1}", shell=True, check=True)
+            
+            log_info(f"Concatenating R2 files: {tmp_r2_files} into {merged_r2}")
             subprocess.run(f"cat {' '.join(tmp_r2_files)} > {merged_r2}", shell=True, check=True)
 
             # Clean up temporary files
@@ -162,6 +167,7 @@ def parse_and_validate_tsv(input_file, stage_target):
             entry = entries[0]
             staged_r1 = os.path.join(staged_sample_path, os.path.basename(entry[9]))
             staged_r2 = os.path.join(staged_sample_path, os.path.basename(entry[10]))
+            log_info(f"Processing single-lane sample: {sample_prefix} with R1: {staged_r1} and R2: {staged_r2}")
             copy_files_to_target(entry[9], staged_r1, entry[11] == "link_data")
             copy_files_to_target(entry[10], staged_r2, entry[11] == "link_data")
 
