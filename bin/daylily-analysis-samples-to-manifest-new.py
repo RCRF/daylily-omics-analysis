@@ -103,17 +103,29 @@ def parse_and_validate_tsv(input_file, stage_target):
         if is_multi_lane and "0" in lanes:
             log_error(f"Invalid LANE=0 for multi-lane sample: {sample_key}")
 
-        if len(sample_key[0].split("_")) + len(sample_key[1].split("_")) + len(sample_key[2].split("_")) !=0:
-            log_error(f"RUN_ID, SAMPLE_ID, SAMPLE_ANNO, SAMPLE_TYPE must not contain underscores: {sample_key}\n")
-            raise Exception(f"RUN_ID, SAMPLE_ID, SAMPLE_ANNO, SAMPLE_TYPE must not contain underscores: {sample_key}\n")
-
-        sample_prefix = f"{sample_key[0]}_{sample_key[1]}-{sample_key[2]}_{sample_key[3]}"
+        if len(sample_key[0].split("_")) + len(sample_key[1].split("_")) + len(sample_key[2].split("_")) + len(sample_key[3].split("_")) + len(sample_key[4].split("_")) + len(sample_key[5].split("_")) + len(sample_key[6].split("_")) + len(sample_key[7].split("_")) != 0:
+            log_warn(f"RUN_ID, SAMPLE_ID, SAMPLE_ANNO, SAMPLE_TYPE, LIB_PREP, SEQ_PLATFORM, LANE, SEQBC_ID must not contain underscores: {sample_key}\n")
+            #log_error(f"RUN_ID  SAMPLE_ID  SAMPLE_ANNO     SAMPLE_TYPE     LIB_PREP        SEQ_PLATFORM    LANE    SEQBC_ID must not contain underscores: {sample_key}\n")
+            #raise Exception(f"RUN_ID  SAMPLE_ID  SAMPLE_ANNO     SAMPLE_TYPE     LIB_PREP        SEQ_PLATFORM    LANE    SEQBC_ID  must not contain underscores: {sample_key}\n")
+            
+        ruid = sample_key[0].replace("_", "-")
+        sampleid = sample_key[1].replace("_", "-")
+        sampleanno = sample_key[2].replace("_", "-")
+        sampletype = sample_key[3].replace("_", "-")
+        libprep = sample_key[4].replace("_", "-")
+        seqplatform = sample_key[5].replace("_", "-")
+        lane = sample_key[6].replace("_", "-")
+        seqbc = sample_key[7].replace("_", "-")
+        
+        # RU_sampleid_seqbc_lane(always 0 in this script output)
+        new_sample_id = f"{sampleid}-{seqplatform}-{libprep}-{sampletype}-{sampleanno}"
+        sample_prefix = f"{ruid}_{new_sample_id}_{seqbc}_0"
         staged_sample_path = os.path.join(stage_target, sample_prefix)
         os.makedirs(staged_sample_path, exist_ok=True)
 
         if is_multi_lane:
-            merged_r1 = os.path.join(staged_sample_path, f"{sample_key[1]}_merged_R1.fastq.gz")
-            merged_r2 = os.path.join(staged_sample_path, f"{sample_key[1]}_merged_R2.fastq.gz")
+            merged_r1 = os.path.join(staged_sample_path, f"{sample_prefix}_merged_R1.fastq.gz")
+            merged_r2 = os.path.join(staged_sample_path, f"{sample_prefix}_merged_R2.fastq.gz")
             r1_files, r2_files = zip(*[(e[9], e[10]) for e in entries])
 
             for f in r1_files + r2_files:
@@ -140,11 +152,11 @@ def parse_and_validate_tsv(input_file, stage_target):
                 os.remove(tmp_file)
 
             rows.append([
-                sample_prefix, sample_prefix, sample_prefix, sample_key[3], sample_key[0], sample_key[1],
+                sample_prefix, sample_prefix, sample_prefix, seqbc, ruid, new_sample_id,
                 "0", merged_r1, merged_r2, determine_sex(int(entries[0][16]), int(entries[0][17])), "na",
                 validate_and_stage_concordance_dir(entries[0][8], stage_target, sample_prefix),
-                entries[0][14], entries[0][15], sample_key[3], "merge", sample_key[1],
-                sample_key[5], sample_key[4], "19", validate_subsample_pct(entries[0][13])
+                entries[0][14], entries[0][15], sampletype, "merge", sampleid,
+                seqplatform, libprep, "19", validate_subsample_pct(entries[0][13])
             ])
         else:
             entry = entries[0]
@@ -154,11 +166,11 @@ def parse_and_validate_tsv(input_file, stage_target):
             copy_files_to_target(entry[10], staged_r2, entry[11] == "link_data")
 
             rows.append([
-                sample_prefix, sample_prefix, sample_prefix, sample_key[3], sample_key[0], sample_key[1],
-                entry[6], staged_r1, staged_r2, determine_sex(int(entry[16]), int(entry[17])), "na",
-                validate_and_stage_concordance_dir(entry[8], stage_target, sample_prefix),
-                entry[14], entry[15], sample_key[3], "merge", sample_key[1],
-                sample_key[5], sample_key[4], "19", validate_subsample_pct(entry[13])
+                sample_prefix, sample_prefix, sample_prefix, seqbc, ruid, new_sample_id,
+                lane, merged_r1, merged_r2, determine_sex(int(entries[0][16]), int(entries[0][17])), "na",
+                validate_and_stage_concordance_dir(entries[0][8], stage_target, sample_prefix),
+                entries[0][14], entries[0][15], sampletype, "merge", sampleid,
+                seqplatform, libprep, "19", validate_subsample_pct(entries[0][13])
             ])
 
     manifest_file = os.path.join(stage_target, "analysis_manifest.csv")
