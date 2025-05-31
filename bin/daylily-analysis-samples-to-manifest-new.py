@@ -103,7 +103,7 @@ def parse_and_validate_tsv(input_file, stage_target):
         if is_multi_lane and "0" in lanes:
             log_error(f"Invalid LANE=0 for multi-lane sample: {sample_key}")
 
-        print("xxxxx",sample_key)
+        print("xxxxx",sample_key, entries)
         if len(sample_key[0].split("_")) + len(sample_key[1].split("_")) + len(sample_key[2].split("_")) + len(sample_key[3].split("_")) + len(sample_key[4].split("_")) + len(sample_key[5].split("_")) + len(sample_key[6].split("_")) + len(sample_key[7].split("_")) != 0:
             log_warn(f"RUN_ID, SAMPLE_ID, SAMPLE_ANNO, SAMPLE_TYPE, LIB_PREP, SEQ_PLATFORM, LANE, SEQBC_ID must not contain underscores: {sample_key}\n")
             #log_error(f"RUN_ID  SAMPLE_ID  SAMPLE_ANNO     SAMPLE_TYPE     LIB_PREP        SEQ_PLATFORM    LANE    SEQBC_ID must not contain underscores: {sample_key}\n")
