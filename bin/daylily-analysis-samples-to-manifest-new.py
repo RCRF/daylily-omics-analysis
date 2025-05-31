@@ -104,7 +104,9 @@ def parse_and_validate_tsv(input_file, stage_target):
             log_error(f"Invalid LANE=0 for multi-lane sample: {sample_key}")
 
         if len(sample_key[0].split("_")) + len(sample_key[1].split("_")) + len(sample_key[2].split("_")) + len(sample_key[3].split("_")) + len(sample_key[4].split("_")) + len(sample_key[5].split("_")) + len(entries[0][6].split("_")) + len(entries[0][7].split("_")) != 0:
-            log_warn(f"RUN_ID, SAMPLE_ID, SAMPLE_ANNO, SAMPLE_TYPE, LIB_PREP, SEQ_PLATFORM, LANE, SEQBC_ID must not contain underscores: {sample_key} .. {entries}\n")
+            log_warn(f"RUN_ID, SAMPLE_ID, SAMPLE_ANNO, SAMPLE_TYPE, LIB_PREP, SEQ_PLATFORM, LANE, SEQBC_ID must not contain underscores: {sample_key} .. {entries}\n\n")
+            log_warn(" UNDERSCORES '_' WILL BE REPLACED WITH HYPHENS '-' \n")
+            log_warn("...")
             #log_error(f"RUN_ID  SAMPLE_ID  SAMPLE_ANNO     SAMPLE_TYPE     LIB_PREP        SEQ_PLATFORM    LANE    SEQBC_ID must not contain underscores: {sample_key} .. {entries}\n")
             #raise Exception(f"RUN_ID  SAMPLE_ID  SAMPLE_ANNO     SAMPLE_TYPE     LIB_PREP        SEQ_PLATFORM    LANE    SEQBC_ID  must not contain underscores: {sample_key} .. {entries}\n")
             
