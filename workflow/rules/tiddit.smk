@@ -10,8 +10,8 @@
 
 rule tiddit:
     input:
-        bamo=MDIR + "{sample}/align/{alnr}/{sample}.{alnr}.mrkdup.sort.bam",
-        bai=MDIR +  "{sample}/align/{alnr}/{sample}.{alnr}.mrkdup.sort.bam.bai",
+        cram=MDIR + "{sample}/align/{alnr}/{sample}.{alnr}.cram",
+        crai=MDIR + "{sample}/align/{alnr}/{sample}.{alnr}.cram.crai",
     output:
         stub = MDIR + "{sample}/align/{alnr}/sv/tiddit/{sample}.{alnr}.tiddit.sv",
         vcf = temp(MDIR + "{sample}/align/{alnr}/sv/tiddit/{sample}.{alnr}.tiddit.sv.vcf"),
@@ -45,7 +45,7 @@ rule tiddit:
         touch {output.stub};
         
         echo TheFileWasCreated > {output.stub};
-        tiddit --sv --threads {threads} --bam {input.bamo} -z {params.min_sv_size} -o {output.stub} --ref {params.huref} >> {log} ;
+        tiddit --sv --threads {threads} --bam {input.cram} -z {params.min_sv_size} -o {output.stub} --ref {params.huref} >> {log} ;
         touch {output};
         ls {output};
         rm -rf $(dirname {output.vcf})/*sv_tiddit/clips* || echo 'clips rmFailed' >> {log} 2>&1;
