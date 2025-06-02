@@ -50,7 +50,7 @@ def validate_and_stage_concordance_dir(concordance_dir, stage_target, sample_pre
     target_concordance_dir = os.path.join(stage_target, sample_prefix, "concordance_data")
     os.makedirs(target_concordance_dir, exist_ok=True)
     if concordance_dir.startswith(("http://", "https://")):
-        subprocess.run(["wget", "-q", "-P", target_concordance_dir, concordance_dir], check=True)
+        subprocess.run(["wget", "-q", "-P", "--recursive", target_concordance_dir, concordance_dir], check=True)
     elif concordance_dir.startswith("s3://"):
         subprocess.run(["aws", "s3", "cp", concordance_dir, target_concordance_dir, "--recursive"], check=True)
     return target_concordance_dir
@@ -103,7 +103,9 @@ def parse_and_validate_tsv(input_file, stage_target):
         if is_multi_lane and "0" in lanes:
             log_error(f"Invalid LANE=0 for multi-lane sample: {sample_key}")
 
-        if len(sample_key[0].split("_")) + len(sample_key[1].split("_")) + len(sample_key[2].split("_")) + len(sample_key[3].split("_")) + len(sample_key[4].split("_")) + len(sample_key[5].split("_")) + len(entries[0][6].split("_")) + len(entries[0][7].split("_")) != 0:
+
+        if any("_" in part for part in sample_key + (entries[0][6], entries[0][7])):
+            log_warn(f"UNDERSCORES '_' FOUND AND WILL BE REPLACED WITH '-' IN: {sample_key}")
             log_warn(f"RUN_ID, SAMPLE_ID, SAMPLE_ANNO, SAMPLE_TYPE, LIB_PREP, SEQ_PLATFORM, LANE, SEQBC_ID must not contain underscores: {sample_key} .. {entries}\n\n")
             log_warn(" UNDERSCORES '_' WILL BE REPLACED WITH HYPHENS '-' \n")
             log_warn("...")
@@ -182,7 +184,12 @@ def parse_and_validate_tsv(input_file, stage_target):
             ])
 
     manifest_file = os.path.join(stage_target, "analysis_manifest.csv")
-    generate_analysis_manifest(manifest_file, rows)
+    tmp_manifest = manifest_file + ".tmp"
+    log_warn(f"Creating manifest tmp file: {tmp_manifest}")
+    generate_analysis_manifest(tmp_manifest, rows)
+    log_info(f"Manifest created, renaming from {tmp_manifest}, to {manifest_file}")
+    os.rename(tmp_manifest, manifest_file)
+
     log_info(f"Manifest created: {manifest_file}")
     log_info(f"Use this manifest: \n\tcp {manifest_file} config/analysis_manifest.csv")
 
