@@ -175,7 +175,7 @@ def parse_and_validate_tsv(input_file, stage_target):
 
             rows.append([
                 sample_prefix, sample_prefix, sample_prefix, seqbc, ruid, new_sample_id,
-                lane, merged_r1, merged_r2, determine_sex(int(entries[0][16]), int(entries[0][17])), "na",
+                lane, staged_r1, staged_r2, determine_sex(int(entries[0][16]), int(entries[0][17])), "na",
                 validate_and_stage_concordance_dir(entries[0][8], stage_target, sample_prefix),
                 entries[0][14], entries[0][15], sampletype, "merge", sampleid,
                 seqplatform, libprep, "19", validate_subsample_pct(entries[0][13])
