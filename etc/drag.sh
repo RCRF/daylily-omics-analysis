@@ -7,7 +7,6 @@ dragen \
     --validate-pangenome-reference=false \
     --events-log-file=$PWD/results/dragen_events.csv \
     --enable-metrics-json=true \
-    --enable-personalization=true \
     --enable-variant-caller=true \
     --vc-enable-bqd=true \
     --vc-enable-vcf-output=true \
