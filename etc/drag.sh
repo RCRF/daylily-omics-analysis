@@ -1,0 +1,23 @@
+dragen \
+    --fastq-list=./ss.csv \
+    --fastq-list-sample-id=HG001 \
+    -r  /fsx/scratch/dragen_ref/ \
+    --output-directory $PWD/results/ \
+    --output-file-prefix hg001 \
+    --validate-pangenome-reference=false \
+    --events-log-file=$PWD/results/dragen_events.csv \
+    --enable-metrics-json=true \
+    --enable-variant-caller=true \
+    --vc-enable-bqd=true \
+    --vc-enable-vcf-output=true \
+    --vc-emit-ref-confidence=GVCF \
+    --vc-enable-mapq-zero-regions=true \
+    --vc-ml-enable-recalibration=true \
+    --enable-vcf-compression=true \
+    --enable-ploidy-estimator=true \
+    --sample-sex=auto \
+    --enable-map-align=true \
+    --enable-map-align-output=true \
+    --output-format=CRAM \
+    --enable-bam-indexing=true \
+    --enable-duplicate-marking=true

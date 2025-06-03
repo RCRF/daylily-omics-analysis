@@ -57,7 +57,8 @@ if "dppl" in DDUP:
             echo "INSTANCE TYPE: $itype" > {log};
 	        echo "INSTANCE TYPE: $itype";
             start_time=$(date +%s);
-            
+            ulimit -n 65536 || echo "ulimit mod failed" > {log} 2>&1;
+
             timestamp=$(date +%Y%m%d%H%M%S);
 
             TMPDIR=/fsx/scratch/doppel_tmp_$timestamp;

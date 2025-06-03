@@ -4,6 +4,7 @@ import os
 ##### Clair3
 # ---------------------------
 
+
 def get_clair_model_path(wildcards):
     # using the aligner is a hack, should move this to config and pulled from seq technology
     instrument = samples[samples["samp"] == wildcards.sample]["instrument"][0].lower()
@@ -81,9 +82,9 @@ rule clair3:
         + "{sample}/align/{alnr}/snv/clair3/vcfs/{clairchrm}/{sample}.{alnr}.clair3.{clairchrm}.snv.vcf.gz"
     log:
         MDIR + "{sample}/align/{alnr}/snv/clair3/log/{sample}.{alnr}.clair3.{clairchrm}.snv.log",
-    threads: config['clair3']['threads']
+    threads: config['clair3']['threads'] if get_instrument in ['na',None,'None'] else config['clair3']['ont_threads']
     container:
-        "docker://hkubal/clair3:latest"
+        "docker://hkubal/clair3:v1.1.0"
     priority: 45
     resources:
         vcpu=config['clair3']['threads'],
@@ -118,11 +119,12 @@ rule clair3:
         echo "INSTANCE TYPE: $itype" > {log};
 
 
+        ulimit -n 65536 || echo "ulimit mod failed" > {log} 2>&1;
 
         timestamp=$(date +%Y%m%d%H%M%S);
-        TMPDIR=/fsx/scratch/clair3_tmp_$timestamp;
+        export TMPDIR=/fsx/scratch/clair3_tmp_$timestamp;
         mkdir -p $TMPDIR;
-        APPTAINER_HOME=$TMPDIR;
+        export APPTAINER_HOME=$TMPDIR;
         trap "rm -rf $TMPDIR" EXIT;
         tdir=$TMPDIR;
 

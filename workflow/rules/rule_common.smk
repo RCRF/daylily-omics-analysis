@@ -759,5 +759,49 @@ def get_dchrm_day(wildcards):
     return ret_mod_chrm(ret_str).lstrip(',').replace('chr23','chrX').replace('chr24','chrY').replace('chr25','chrMT').replace('23:','X:').replace('24:','Y:').replace('25:',f'{mito_code}:')
 
 
+def get_dvchrm_day(wildcards):
+    pchr="" #prefix handled already
+    ret_str = ""
+    sl = wildcards.dvchrm.replace('chr','').split("-")
+    sl2 = wildcards.dvchrm.replace('chr','').split("~")
+    
+    if len(sl2) == 2:
+        ret_str = pchr + wildcards.dvchrm
+    elif len(sl) == 1:
+        ret_str = pchr + sl[0]
+    elif len(sl) == 2:
+        start = int(sl[0])
+        end = int(sl[1])
+        while start <= end:
+            ret_str = str(ret_str) + " " + pchr + str(start)
+            start = start + 1
+    else:
+        raise Exception(
+            "deep chunks can only be one contiguous range per chunk : ie: 1-4 with the non numerical chrms assigned 23=X, 24=Y, 25=MT"
+        )
+
+    return ret_mod_chrm(ret_str)
+
+
+def get_deep_model(wildcards):
+    deep_model="WGS"
+
+    try:
+        deep_model = samples[samples["samp"] == wildcards.sample]["deep_model"][0]
+    except Exception as e:
+        print(f"'deep_model' key not found" + str(e), file=sys.stderr)
+
+    return deep_model
+
+
+def instrument(wildcards):
+    instrument = "na"
+    try:
+        instrument = samples[samples["samp"] == wildcards.sample]["instrument"][0].lower()
+    except Exception as e:
+        instrument = "na"
+    return instrument
+
+    
 OG_ALIGNERS=list(set(ALIGNERS)-set(CRAM_ALIGNERS))
 ALL_ALIGNERS=list(set(ALIGNERS+CRAM_ALIGNERS))

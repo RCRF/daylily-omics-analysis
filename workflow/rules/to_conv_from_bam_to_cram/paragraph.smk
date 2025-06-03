@@ -13,8 +13,10 @@ def get_bam_depth(wildcards):
     #samp_alnr_depth = samples.loc("wildcards.sample", "wildcards.alnr-BAM-medcov")[0]
     return samp_alnr_depth
 
-# this will end up playing the role of SV caller as well as like duphpld a sv refiner
+# this will end up playing the role of SV caller as well as like duphold a sv refiner
 #  this is very crude calling
+
+# !!!! DOES NOT NATIVELY WORK WITH CRAMS
 rule paragraph:
     input:
         vcf=MDIR + "{sample}/align/{alnr}/{sample}.{alnr}.mrkdup.sort.bam",

@@ -147,19 +147,20 @@ else:
             start_time=$(date +%s);
 
             timestamp=$(date +%Y%m%d%H%M%S);
-            TMPDIR=/fsx/scratch/strobe_tmp_$timestamp;
+            export TMPDIR=/dev/shm/strobe_tmp_$timestamp;
             mkdir -p $TMPDIR;
-            APPTAINER_HOME=$TMPDIR;
+            export APPTAINER_HOME=$TMPDIR;
             trap "rm -rf \"$TMPDIR\" || echo '$TMPDIR rm fails' >> {log} 2>&1" EXIT;
             tdir=$TMPDIR;
 
             epocsec=$(date +'%s');
 
             ulimit -n 65536 || echo "ulimit mod failed";
+            # THIS DOES NOT WORK AT ALL DUE TO ULTIMA FASTQ QUALSCORE PECULIARITIES
 
-
-            samtools fastq -n --reference {params.huref} -@ {params.sort_threads} -s -  {input.cram} \
-            {params.mbuffer} | {params.strobe_cmd} \
+            samtools fastq --reference {params.huref} \
+            -@ {params.threads} -n -f 0 {input.cram}   \
+            | {params.strobe_cmd} \
             -t {params.strobe_threads} {params.strobe_opts} \
             --rg-id="{params.cluster_sample}-$epocsec" \
             --rg="SM:{params.cluster_sample}" \

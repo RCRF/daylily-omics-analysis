@@ -18,8 +18,8 @@ rule manta_get_centos_env:
 rule manta:
     """https://github.com/Illumina/manta"""
     input:
-        bamo=f"{MDIR}" + "{sample}/align/{alnr}/{sample}.{alnr}.mrkdup.sort.bam",
-        bami=f"{MDIR}" + "{sample}/align/{alnr}/{sample}.{alnr}.mrkdup.sort.bam.bai",
+        cram=MDIR + "{sample}/align/{alnr}/{sample}.{alnr}.cram",
+        crai=MDIR + "{sample}/align/{alnr}/{sample}.{alnr}.cram.crai",
     output:
         vcf=f"{MDIR}" + "{sample}/align/{alnr}/sv/manta/{sample}.{alnr}.manta.sv.vcf",
     threads: config["manta"]["threads"]
@@ -54,7 +54,7 @@ rule manta:
         set +euo pipefail;
         (rm -rf {params.work_dir} || echo rmFail;
         mkdir -p {params.work_dir}|| echo mkdirERROR ;
-        configManta.py --bam {input.bamo} --reference {params.huref} --runDir {params.work_dir}  ;
+        configManta.py --bam {input.cram} --reference {params.huref} --runDir {params.work_dir}  ;
         python {params.work_dir}/runWorkflow.py  -j {threads} || echo noFail;) > {log} 2>&1;
         python workflow/scripts/manta_uniter.py {params.work_dir}/results/variants/diploidSV.vcf.gz {params.work_dir}/results/variants/candidateSV.vcf.gz > {output.vcf} ;
         {latency_wait}; ls {output};

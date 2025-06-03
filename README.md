@@ -1,7 +1,7 @@
 MIGRATING THE ANALYSIS SPECIFIC BITS FROM 'daylily' here, and the AWS infra stuff to `daylily-ephemeral-cluster`
 
 # Daylily Omics Analysis
-_(stable tagged release to use --> 0.7.203 ... use main at own risk)_
+_(stable tagged release to use --> 0.7.213 ... use main at own risk)_
 
 **beta release**
 
@@ -871,6 +871,8 @@ _named in honor of Margaret Oakley Dahoff_
 Z
 a
 A
+ 
+ 
  
  
  

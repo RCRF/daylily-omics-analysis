@@ -50,7 +50,7 @@ def validate_and_stage_concordance_dir(concordance_dir, stage_target, sample_pre
     target_concordance_dir = os.path.join(stage_target, sample_prefix, "concordance_data")
     os.makedirs(target_concordance_dir, exist_ok=True)
     if concordance_dir.startswith(("http://", "https://")):
-        subprocess.run(["wget", "-q", "-P", target_concordance_dir, concordance_dir], check=True)
+        subprocess.run(["wget", "-q", "-P", "--recursive", target_concordance_dir, concordance_dir], check=True)
     elif concordance_dir.startswith("s3://"):
         subprocess.run(["aws", "s3", "cp", concordance_dir, target_concordance_dir, "--recursive"], check=True)
     return target_concordance_dir
@@ -103,13 +103,33 @@ def parse_and_validate_tsv(input_file, stage_target):
         if is_multi_lane and "0" in lanes:
             log_error(f"Invalid LANE=0 for multi-lane sample: {sample_key}")
 
-        sample_prefix = f"{sample_key[0]}_{sample_key[1]}-{sample_key[2]}_{sample_key[3]}"
+
+        if any("_" in part for part in sample_key + (entries[0][6], entries[0][7])):
+            log_warn(f"UNDERSCORES '_' FOUND AND WILL BE REPLACED WITH '-' IN: {sample_key}")
+            log_warn(f"RUN_ID, SAMPLE_ID, SAMPLE_ANNO, SAMPLE_TYPE, LIB_PREP, SEQ_PLATFORM, LANE, SEQBC_ID must not contain underscores: {sample_key} .. {entries}\n\n")
+            log_warn(" UNDERSCORES '_' WILL BE REPLACED WITH HYPHENS '-' \n")
+            log_warn("...")
+            #log_error(f"RUN_ID  SAMPLE_ID  SAMPLE_ANNO     SAMPLE_TYPE     LIB_PREP        SEQ_PLATFORM    LANE    SEQBC_ID must not contain underscores: {sample_key} .. {entries}\n")
+            #raise Exception(f"RUN_ID  SAMPLE_ID  SAMPLE_ANNO     SAMPLE_TYPE     LIB_PREP        SEQ_PLATFORM    LANE    SEQBC_ID  must not contain underscores: {sample_key} .. {entries}\n")
+            
+        ruid = sample_key[0].replace("_", "-")
+        sampleid = sample_key[1].replace("_", "-")
+        sampleanno = sample_key[2].replace("_", "-")
+        sampletype = sample_key[3].replace("_", "-")
+        libprep = sample_key[4].replace("_", "-")
+        seqplatform = sample_key[5].replace("_", "-")
+        lane = entries[0][6].replace("_", "-")
+        seqbc = entries[0][7].replace("_", "-")
+        
+        # RU_sampleid_seqbc_lane(always 0 in this script output)
+        new_sample_id = f"{sampleid}-{seqplatform}-{libprep}-{sampletype}-{sampleanno}"
+        sample_prefix = f"{ruid}_{new_sample_id}_{seqbc}_0"
         staged_sample_path = os.path.join(stage_target, sample_prefix)
         os.makedirs(staged_sample_path, exist_ok=True)
 
         if is_multi_lane:
-            merged_r1 = os.path.join(staged_sample_path, f"{sample_key[1]}_merged_R1.fastq.gz")
-            merged_r2 = os.path.join(staged_sample_path, f"{sample_key[1]}_merged_R2.fastq.gz")
+            merged_r1 = os.path.join(staged_sample_path, f"{sample_prefix}_merged_R1.fastq.gz")
+            merged_r2 = os.path.join(staged_sample_path, f"{sample_prefix}_merged_R2.fastq.gz")
             r1_files, r2_files = zip(*[(e[9], e[10]) for e in entries])
 
             for f in r1_files + r2_files:
@@ -118,8 +138,10 @@ def parse_and_validate_tsv(input_file, stage_target):
             tmp_r1_files = []
             tmp_r2_files = []
 
+            log_info(f"Processing multi-lane sample: {sample_prefix} with R1 files: {r1_files} and R2 files: {r2_files}")
             # Download S3 files locally first if they're from S3
             for idx, (r1, r2) in enumerate(zip(r1_files, r2_files)):
+                log_info(f"Downloading R1: {r1}, R2: {r2} for sample {sample_prefix}")
                 local_r1 = os.path.join(staged_sample_path, f"tmp_{idx}_R1.fastq.gz")
                 local_r2 = os.path.join(staged_sample_path, f"tmp_{idx}_R2.fastq.gz")
                 copy_files_to_target(r1, local_r1)
@@ -127,8 +149,11 @@ def parse_and_validate_tsv(input_file, stage_target):
                 tmp_r1_files.append(local_r1)
                 tmp_r2_files.append(local_r2)
 
+            log_info(f"Concatenating R1 files: {tmp_r1_files} into {merged_r1}")
             # Concatenate the downloaded local files
             subprocess.run(f"cat {' '.join(tmp_r1_files)} > {merged_r1}", shell=True, check=True)
+            
+            log_info(f"Concatenating R2 files: {tmp_r2_files} into {merged_r2}")
             subprocess.run(f"cat {' '.join(tmp_r2_files)} > {merged_r2}", shell=True, check=True)
 
             # Clean up temporary files
@@ -136,29 +161,35 @@ def parse_and_validate_tsv(input_file, stage_target):
                 os.remove(tmp_file)
 
             rows.append([
-                sample_prefix, sample_prefix, sample_prefix, sample_key[3], sample_key[0], sample_key[1],
+                sample_prefix, sample_prefix, sample_prefix, seqbc, ruid, new_sample_id,
                 "0", merged_r1, merged_r2, determine_sex(int(entries[0][16]), int(entries[0][17])), "na",
                 validate_and_stage_concordance_dir(entries[0][8], stage_target, sample_prefix),
-                entries[0][14], entries[0][15], sample_key[3], "merge", sample_key[1],
-                sample_key[5], sample_key[4], "19", validate_subsample_pct(entries[0][13])
+                entries[0][14], entries[0][15], sampletype, "merge", sampleid,
+                seqplatform, libprep, "19", validate_subsample_pct(entries[0][13])
             ])
         else:
             entry = entries[0]
             staged_r1 = os.path.join(staged_sample_path, os.path.basename(entry[9]))
             staged_r2 = os.path.join(staged_sample_path, os.path.basename(entry[10]))
+            log_info(f"Processing single-lane sample: {sample_prefix} with R1: {staged_r1} and R2: {staged_r2}")
             copy_files_to_target(entry[9], staged_r1, entry[11] == "link_data")
             copy_files_to_target(entry[10], staged_r2, entry[11] == "link_data")
 
             rows.append([
-                sample_prefix, sample_prefix, sample_prefix, sample_key[3], sample_key[0], sample_key[1],
-                entry[6], staged_r1, staged_r2, determine_sex(int(entry[16]), int(entry[17])), "na",
-                validate_and_stage_concordance_dir(entry[8], stage_target, sample_prefix),
-                entry[14], entry[15], sample_key[3], "merge", sample_key[1],
-                sample_key[5], sample_key[4], "19", validate_subsample_pct(entry[13])
+                sample_prefix, sample_prefix, sample_prefix, seqbc, ruid, new_sample_id,
+                lane, staged_r1, staged_r2, determine_sex(int(entries[0][16]), int(entries[0][17])), "na",
+                validate_and_stage_concordance_dir(entries[0][8], stage_target, sample_prefix),
+                entries[0][14], entries[0][15], sampletype, "merge", sampleid,
+                seqplatform, libprep, "19", validate_subsample_pct(entries[0][13])
             ])
 
     manifest_file = os.path.join(stage_target, "analysis_manifest.csv")
-    generate_analysis_manifest(manifest_file, rows)
+    tmp_manifest = manifest_file + ".tmp"
+    log_warn(f"Creating manifest tmp file: {tmp_manifest}")
+    generate_analysis_manifest(tmp_manifest, rows)
+    log_info(f"Manifest created, renaming from {tmp_manifest}, to {manifest_file}")
+    os.rename(tmp_manifest, manifest_file)
+
     log_info(f"Manifest created: {manifest_file}")
     log_info(f"Use this manifest: \n\tcp {manifest_file} config/analysis_manifest.csv")
 

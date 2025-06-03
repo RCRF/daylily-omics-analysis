@@ -111,10 +111,10 @@ rule octopus:
         """ 
         touch {output.vcf};
         timestamp=$(date +%Y%m%d%H%M%S);
-        TMPDIR=./octo_tmp_$timestamp;
-        APPTAINER_HOME=$TMPDIR;
+        export TMPDIR=$(dirname {log})/octo_tmp_$timestamp; #resources/dev/shm/octo_tmp_$timestamp;
         trap "sleep 2 && rm -rf \"$TMPDIR\" || echo '$TMPDIR rm fails' >> {log} 2>&1" EXIT;
-        
+        ulimit -n 65536 || echo "ulimit mod failed" > {log} 2>&1;
+
         oochrm_mod=$(echo '{params.ochrm_mod}' | sed 's/~/\:/g' | perl -pe 's/(^23| 23)/ X/g;' | perl -pe 's/(^24| 24)/ Y/g;' | perl -pe 's/(^25| 25)/ {params.mito_code}/g;');
 
         {params.ld_pre} /opt/octopus/bin/octopus -T $oochrm_mod --threads {threads}    \

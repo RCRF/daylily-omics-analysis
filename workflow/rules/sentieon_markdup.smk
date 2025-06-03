@@ -17,7 +17,7 @@ if "sent" in DDUP:
             crai="{MDIR}{sample}/align/{alnr}/{sample}.{alnr}.cram.crai",
             score="{MDIR}{sample}/align/{alnr}/{sample}.{alnr}.cram.score.txt",
             metrics="{MDIR}{sample}/align/{alnr}/{sample}.{alnr}.cram.mrkdup.metrics",
-        threads: config["sentieon"]["threads"]
+        threads: config["sentieon_markdups"]["threads"]
         benchmark:
             repeat("{MDIR}{sample}/benchmarks/{sample}.{alnr}.mrkdup.bench.tsv", 0)
         conda:
@@ -25,11 +25,14 @@ if "sent" in DDUP:
         params:
             cluster_sample=ret_sample,
 	        huref=config["supporting_files"]["files"]["huref"]["fasta"]["name"],
+            max_mem=config["sentieon_markdups"]["max_mem"],
+            numa=config['sentieon_markdups']['numactl'],
+            cram_opts=" --cram_write_options version=3.0,compressor=rans ",
         resources:
-            threads=config['sentieon']['threads'],
-            partition=config['sentieon']['partition'],
-            vcpu=config['sentieon']['threads'],
-            mem_mb="160G",
+            threads=config['sentieon_markdups']['threads'],
+            partition=config['sentieon_markdups']['partition'],
+            vcpu=config['sentieon_markdups']['threads'],
+            mem_mb=config['sentieon_markdups']['max_mem'],
         log:
             "{MDIR}{sample}/align/{alnr}/logs/dedupe.{sample}.{alnr}.log",
         shell:
@@ -72,16 +75,26 @@ if "sent" in DDUP:
                 echo "libjemalloc not found in the active conda environment $CONDA_PREFIX.";
                 exit 3;
             fi
-            LD_PRELOAD=$LD_PRELOAD  /fsx/data/cached_envs/sentieon-genomics-202503.01.rc1/bin/libexec/driver \
-             --input {input.bam} \
-             --reference {params.huref} \
-             --thread_count {threads} \
-             --interval_padding 0 \
-             --algo Dedup \
-             --score_info {output.score} \
-             --cram_write_options version=3.0,compressor=rans \
-             --metrics {output.metrics} \
-            {output.cram} >> {log} 2>&1;
 
+
+            {params.numa} LD_PRELOAD=$LD_PRELOAD /fsx/data/cached_envs/sentieon-genomics-202503.01.rc1/bin/sentieon driver \
+            --input {input.bam} \
+            --reference {params.huref} \
+            --thread_count {threads} \
+            --algo LocusCollector --fun score_info {output.score} >> {log} 2>&1
+
+            {params.numa} LD_PRELOAD=$LD_PRELOAD /fsx/data/cached_envs/sentieon-genomics-202503.01.rc1/bin/sentieon driver \
+            --input {input.bam} \
+            --reference {params.huref} \
+            --thread_count {threads} \
+            --algo Dedup \
+            --score_info {output.score} \
+            --metrics {output.metrics} {params.cram_opts} \
+            {output.cram} >> {log} 2>&1
+
+            end_time=$(date +%s);
+            elapsed_time=$((($end_time - $start_time) / 60));
+            echo "Elapsed-Time-min:\t$itype\t$elapsed_time\n";
+            echo "Elapsed-Time-min:\t$itype\t$elapsed_time" >> {log} 2>&1;
 
             """
