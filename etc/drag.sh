@@ -1,5 +1,5 @@
 dragen \
-    --fastq-list=./ss.csv \
+    --fastq-list=./hg001_ss.csv \
     --fastq-list-sample-id=HG001 \
     -r  /fsx/scratch/dragen_ref/ \
     --output-directory $PWD/results/ \
