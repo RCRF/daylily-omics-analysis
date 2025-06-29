@@ -22,9 +22,13 @@ def get_cdir(wildcards):
         ret_d = f"results"+ret_d
     return ret_d
 
+if os.environ.get('DAYLILY_DRAGEN', 'false') == 'true':
+    print("/home/ubuntu/dragen_data/HG001/HG001.hard-filtered.vcf.gz")
+
 
 def get_in_rtg_vcf(wildcards):
     if os.environ.get('DAYLILY_DRAGEN', 'false') == 'true':
+
         return f"{MDIR}{wildcards.sample}/align/{wildcards.alnr}/snv/{wildcards.snv}/{wildcards.sample}.{wildcards.alnr}.{wildcards.snv}.snv.sort.vcf.gz"
     else:
         return f"{MDIR}{wildcards.sample}/align/{wildcards.alnr}/snv/{wildcards.snv}/{wildcards.sample}.{wildcards.alnr}.{wildcards.snv}.snv.sort.vcf.gz"
