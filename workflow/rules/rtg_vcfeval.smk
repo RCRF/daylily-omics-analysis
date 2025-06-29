@@ -1,8 +1,6 @@
 import os
 import sys
 
-
-
 def get_samp_concordance_truth_dir(wildcards):
     cntrl_dir = samples[samples['samp'] == wildcards.sample]["concordance_control_path"][0]
     return cntrl_dir
@@ -26,11 +24,17 @@ def get_cdir(wildcards):
 
 
 def get_in_rtg_vcf(wildcards):
-    return f"{MDIR}{wildcards.sample}/align/{wildcards.alnr}/snv/{wildcards.snv}/{wildcards.sample}.{wildcards.alnr}.{wildcards.snv}.snv.sort.vcf.gz"
+    if os.environ.get('DAYLILY_DRAGEN', 'false') == 'true':
+        return f"{MDIR}{wildcards.sample}/align/{wildcards.alnr}/snv/{wildcards.snv}/{wildcards.sample}.{wildcards.alnr}.{wildcards.snv}.snv.sort.vcf.gz"
+    else:
+        return f"{MDIR}{wildcards.sample}/align/{wildcards.alnr}/snv/{wildcards.snv}/{wildcards.sample}.{wildcards.alnr}.{wildcards.snv}.snv.sort.vcf.gz"
 
 
 def get_in_rtg_tbi(wildcards):
-    return f"{MDIR}{wildcards.sample}/align/{wildcards.alnr}/snv/{wildcards.snv}/{wildcards.sample}.{wildcards.alnr}.{wildcards.snv}.snv.sort.vcf.gz.tbi"
+     if os.environ.get('DAYLILY_DRAGEN', 'false') == 'true':
+        return f"{MDIR}{wildcards.sample}/align/{wildcards.alnr}/snv/{wildcards.snv}/{wildcards.sample}.{wildcards.alnr}.{wildcards.snv}.snv.sort.vcf.gz.tbi"
+    else:
+        return f"{MDIR}{wildcards.sample}/align/{wildcards.alnr}/snv/{wildcards.snv}/{wildcards.sample}.{wildcards.alnr}.{wildcards.snv}.snv.sort.vcf.gz.tbi"
 
 
 if len(CONCORDANCE_SAMPLES.keys()) > 0:

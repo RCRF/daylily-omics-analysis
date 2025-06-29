@@ -1,15 +1,21 @@
 sudo yum update -y
 sudo yum install -y tmux emacs rclone
-sudo dnf install -y fuse fuse3 fuse-common fuse3-libs fuse3-devel htop glances
+sudo dnf install -y fuse fuse3 fuse-common fuse3-libs fuse3-devel htop glances git apptainer
 
 
 wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 
 bash Miniconda3-latest-Linux-x86_64.sh
 
+
+~/miniconda3/bin/conda init
+bash
+
 sudo mkdir /fsx
 sudo chmod a+wrx /fsx
 sudo chmod a+wrx /fsx/
+sudo mkdir /scratch
+sudo chmod -R a+wrx /scratch
 cd fsx/
 mkdir data
 mkdir logs
