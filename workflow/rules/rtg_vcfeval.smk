@@ -29,7 +29,6 @@ if os.environ.get('DAYLILY_DRAGEN', 'false') == 'true':
 
 def get_in_rtg_vcf(wildcards):
     if os.environ.get('DAYLILY_DRAGEN', 'false') == 'true':
-
         return f"{MDIR}{wildcards.sample}/align/{wildcards.alnr}/snv/{wildcards.snv}/{wildcards.sample}.{wildcards.alnr}.{wildcards.snv}.snv.sort.vcf.gz"
     else:
         return f"{MDIR}{wildcards.sample}/align/{wildcards.alnr}/snv/{wildcards.snv}/{wildcards.sample}.{wildcards.alnr}.{wildcards.snv}.snv.sort.vcf.gz"
@@ -118,8 +117,7 @@ if len(CONCORDANCE_SAMPLES.keys()) > 0:
             export alt_name={params.alt_name}  ### $(dirname {params.tdir}/{params.alt_name}/. | perl -pe 's/^.*\///g;' );
 
 
-            # Hack... if the sample entry does not have a concordance dir set, as approximated by the string length of the field being < 6, fake the output files and \
-touch a sentinel noting they have been faked
+            # Hack... if the sample entry does not have a concordance dir set, as approximated by the string length of the field being < 6, fake the output files and touch a sentinel noting they have been faked
             aconcdir={params.conc_dir}
             if (( ${params.l}#aconcdir{params.r} <= 6 )); then
                 echo 'WARNING: concordance is not being run for sample {params.cluster_sample}.' 2>&1;
@@ -198,6 +196,6 @@ rule produce_snv_concordances:  # TARGET:  produce snv concordances
         (find {params.mdir}*/align/*/snv/*/concordance/ | grep  .mqc | parallel ' tail -n +2 {{}} >> {output}';) || echo "GETCONCORDANCECALLSfails"  1>&2;
 
         (perl -pi -e 's/^(.+?)(\t)(.+?)(\t)(.+)$/$3\t$1\t$5/g;' {output} ) || echo "perl regsub failed"  1>&2;
-	perl -pi -e 's/^([^\t]+?)-None\t([^\t]+)/$1-$2\t$2/g;' {output}  1>&2;
+	    perl -pi -e 's/^([^\t]+?)-None\t([^\t]+)/$1-$2\t$2/g;' {output}  1>&2;
 
         """
