@@ -26,6 +26,7 @@ if os.environ.get('DAYLILY_DRAGEN', 'false') == 'true':
     print("/home/ubuntu/dragen_data/HG001/HG001.hard-filtered.vcf.gz")
 
 
+
 def get_in_rtg_vcf(wildcards):
     if os.environ.get('DAYLILY_DRAGEN', 'false') == 'true':
 
