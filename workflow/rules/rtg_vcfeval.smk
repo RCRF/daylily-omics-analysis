@@ -28,15 +28,23 @@ if os.environ.get('DAYLILY_DRAGEN', 'false') == 'true':
 
 
 def get_in_rtg_vcf(wildcards):
-    if os.environ.get('DAYLILY_DRAGEN', 'false') == 'true':
-        return f"{MDIR}{wildcards.sample}/align/{wildcards.alnr}/snv/{wildcards.snv}/{wildcards.sample}.{wildcards.alnr}.{wildcards.snv}.snv.sort.vcf.gz"
+    if os.environ.get('DAYLILY_DRAGEN', 'false') == 'true': 
+        r1 = get_raw_R1s(wildcards)[0]
+        dvcfgz= f"{MDIR}{wildcards.sample}/align/{wildcards.alnr}/snv/{wildcards.snv}/{wildcards.sample}.{wildcards.alnr}.{wildcards.snv}.snv.sort.vcf.gz"
+        os.system(f"mkdir -p {os.path.dirname(dvcfgz)}")
+        os.system(f"ln -s {r1} {dvcfgz}")
+        return dvcfgz
     else:
         return f"{MDIR}{wildcards.sample}/align/{wildcards.alnr}/snv/{wildcards.snv}/{wildcards.sample}.{wildcards.alnr}.{wildcards.snv}.snv.sort.vcf.gz"
 
 
 def get_in_rtg_tbi(wildcards):
     if os.environ.get('DAYLILY_DRAGEN', 'false') == 'true':
-        return f"{MDIR}{wildcards.sample}/align/{wildcards.alnr}/snv/{wildcards.snv}/{wildcards.sample}.{wildcards.alnr}.{wildcards.snv}.snv.sort.vcf.gz.tbi"
+        r2 = get_raw_R2s(wildcards)[0]
+        dvcfgztbi = f"{MDIR}{wildcards.sample}/align/{wildcards.alnr}/snv/{wildcards.snv}/{wildcards.sample}.{wildcards.alnr}.{wildcards.snv}.snv.sort.vcf.gz.tbi"
+        os.system(f"mkdir -p {os.path.dirname(dvcfgztbi)}")
+        os.system(f"ln -s {r2} {dvcfgztbi}")
+        return dvcfgztbi
     else:
         return f"{MDIR}{wildcards.sample}/align/{wildcards.alnr}/snv/{wildcards.snv}/{wildcards.sample}.{wildcards.alnr}.{wildcards.snv}.snv.sort.vcf.gz.tbi"
 
