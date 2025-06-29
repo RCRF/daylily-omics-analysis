@@ -35,7 +35,7 @@ def get_in_rtg_vcf(wildcards):
 
 
 def get_in_rtg_tbi(wildcards):
-     if os.environ.get('DAYLILY_DRAGEN', 'false') == 'true':
+    if os.environ.get('DAYLILY_DRAGEN', 'false') == 'true':
         return f"{MDIR}{wildcards.sample}/align/{wildcards.alnr}/snv/{wildcards.snv}/{wildcards.sample}.{wildcards.alnr}.{wildcards.snv}.snv.sort.vcf.gz.tbi"
     else:
         return f"{MDIR}{wildcards.sample}/align/{wildcards.alnr}/snv/{wildcards.snv}/{wildcards.sample}.{wildcards.alnr}.{wildcards.snv}.snv.sort.vcf.gz.tbi"
