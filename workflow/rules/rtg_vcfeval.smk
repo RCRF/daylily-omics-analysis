@@ -33,7 +33,7 @@ def get_in_rtg_vcf(wildcards):
         dvcfgz= f"{MDIR}{wildcards.sample}/align/{wildcards.alnr}/snv/{wildcards.snv}/{wildcards.sample}.{wildcards.alnr}.{wildcards.snv}.snv.sort.vcf.gz"
         os.system(f"mkdir -p {os.path.dirname(dvcfgz)}")
         os.system(f"ln -s {r1} {dvcfgz}")
-        os.sleep(2)
+        os.system('sleep 2')
         return dvcfgz
     else:
         return f"{MDIR}{wildcards.sample}/align/{wildcards.alnr}/snv/{wildcards.snv}/{wildcards.sample}.{wildcards.alnr}.{wildcards.snv}.snv.sort.vcf.gz"
@@ -45,7 +45,7 @@ def get_in_rtg_tbi(wildcards):
         dvcfgztbi = f"{MDIR}{wildcards.sample}/align/{wildcards.alnr}/snv/{wildcards.snv}/{wildcards.sample}.{wildcards.alnr}.{wildcards.snv}.snv.sort.vcf.gz.tbi"
         os.system(f"mkdir -p {os.path.dirname(dvcfgztbi)}")
         os.system(f"ln -s {r2} {dvcfgztbi}")
-        os.sleep(2)
+        os.system('sleep 2')
         return dvcfgztbi
     else:
         return f"{MDIR}{wildcards.sample}/align/{wildcards.alnr}/snv/{wildcards.snv}/{wildcards.sample}.{wildcards.alnr}.{wildcards.snv}.snv.sort.vcf.gz.tbi"
