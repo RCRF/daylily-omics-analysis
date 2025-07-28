@@ -32,7 +32,7 @@ TBI="${CVCF}.tbi"
 
 # --- Derived paths ---
 SUBD="${ALT_NAME}_$(basename $TRUTH_DIR)"
-CONC_DIR="${OUT_DIR}/concordance/_${SUBD}"
+CONC_DIR="${OUT_DIR}/$(basename $CVCF)/_${SUBD}"
 
 LOG="${CONC_DIR}/${CLUSTER_SAMPLE}.${ALIGNER}.${SNV_CALLER}.concordance.log"
 FOFN="${CONC_DIR}/concordance.fofn"
