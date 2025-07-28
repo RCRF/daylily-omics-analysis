@@ -68,7 +68,7 @@ SUBD="${ALT_NAME}"
 if [[ ! -f "$VCF" || ! -f "$BED" ]]; then
     echo "Missing truth files: $BED or $VCF, skipping" >> "$LOG"
 else
-    OUT_SUBD="${CONC_DIR}/_${SUBD}_$(basename $TRUTH_DIR)"
+    OUT_SUBD="${CONC_DIR}/_${SUBD}_$(basename "${TRUTH_DIR}" | tr '.' '_')"
     rm -rf "$OUT_SUBD" || true
 
    CMD="rtg vcfeval --decompose --squash-ploidy --ref-overlap -e $BED -b $VCF -c $CVCF -o $OUT_SUBD -t $SDF_PATH --threads $SUB_THREADS"
