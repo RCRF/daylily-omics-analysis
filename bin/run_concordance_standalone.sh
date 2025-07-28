@@ -31,13 +31,17 @@ TBI="${CVCF}.tbi"
 : "${SUB_THREADS:=7}"
 
 # --- Derived paths ---
-CONC_DIR="${OUT_DIR}/concordance"
-LOG="${CONC_DIR}/logs/${CLUSTER_SAMPLE}.${ALIGNER}.${SNV_CALLER}.concordance.log"
+SUBD="${ALT_NAME}_$(basename $TRUTH_DIR)"
+CONC_DIR="${OUT_DIR}/concordance/_${SUBD}"
+
+LOG="${CONC_DIR}/${CLUSTER_SAMPLE}.${ALIGNER}.${SNV_CALLER}.concordance.log"
 FOFN="${CONC_DIR}/concordance.fofn"
 FIN_CMDS="${CONC_DIR}/concordance.fin.cmds"
 DONE_SENTINEL="${CONC_DIR}/concordance.done"
+ERR_A="${CONC_DIR}/concordance_a.err"
+ERR_B="${CONC_DIR}/concordance_b.err"
 
-mkdir -p "$(dirname "$FOFN")" "$CONC_DIR/logs"
+mkdir -p "$CONC_DIR"
 
 # --- Initialize files ---
 echo "" > "$FOFN"
