@@ -72,11 +72,10 @@ else
     rm -rf "$OUT_SUBD" || true
 
    CMD="rtg vcfeval --decompose --squash-ploidy --ref-overlap -e $BED -b $VCF -c $CVCF -o $OUT_SUBD -t $SDF_PATH --threads $SUB_THREADS"
-    FIN="python workflow/scripts/parse-vcfeval-summary.py $OUT_SUBD/summary.txt $CLUSTER_SAMPLE $BED $SUBD $ALT_NAME ${CONC_DIR}_${SUBD}/${CLUSTER_SAMPLE}_${SUBD}_summary.txt $allvar_mean_dp $ALIGNER $SNV_CALLER"
+   FIN="python workflow/scripts/parse-vcfeval-summary.py $OUT_SUBD/summary.txt $CLUSTER_SAMPLE $BED $SUBD $ALT_NAME $OUT_SUBD/${CLUSTER_SAMPLE}_${SUBD}_summary.txt $allvar_mean_dp $ALIGNER $SNV_CALLER"
 
     echo "$CMD >> ${CONC_DIR}_a.err 2>&1; $FIN >> ${CONC_DIR}_b.err 2>&1;" >> "$FOFN"
 fi
-
 
 # --- Execute commands ---
 cat "$FOFN" | bash >> "$LOG" 2>&1
