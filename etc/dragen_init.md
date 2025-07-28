@@ -1,11 +1,11 @@
 sudo yum update -y
-sudo yum install -y tmux emacs rclone
+sudo yum install -y tmux emacs rclone 
 sudo dnf install -y fuse fuse3 fuse-common fuse3-libs fuse3-devel htop glances git apptainer
 
 
 wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 
-bash Miniconda3-latest-Linux-x86_64.sh
+bash Miniconda3-latest-Linux-x86_64.sh # Accept all defaults
 
 
 ~/miniconda3/bin/conda init
@@ -43,7 +43,8 @@ mkdir analysis_results/ec2-user
 # create rclone.conf
 
  mkdir -p ~/.config/rclone
-[ec2-user@ip-10-0-0-73 ~]$ emacs ~/.config/rclone/rclone.conf
+
+emacs ~/.config/rclone/rclone.conf
 
 [somename]
 type = s3
@@ -59,7 +60,7 @@ mkdir data
 
 rclone mount --vfs-cache-mode full lsmc:lsmc-dayoa-omics-analysis-us-west-2/data data
 
-# now detach from the tmux session leaving the mount running
+# now detach from the tmux session leaving the mount running w/ 'ctl b + d
 
 # new tmux session for ref build and analysis
 
@@ -82,6 +83,7 @@ emacs ./dragen_ss.csv
 # copy the contents of ./dragen_ss.csv into this file and save
 
 # get your dragen lisc file
+## I've stored mine on my local machine in ~/.aws/dragen_creds.rtf
 
 cp $YOURLISCFILE ./dragen_lisc.rtf
 
