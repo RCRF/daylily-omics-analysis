@@ -87,7 +87,8 @@ fi
 
 # Ensure conda is initialized
 source "$CONDA_DIR/etc/profile.d/conda.sh"
-conda config --set accept_channel_terms true
+
+#conda install -y conda=25.5.1
 
 # Update Conda Config
 conda config --add channels conda-forge
@@ -99,6 +100,8 @@ conda config --set verify_threads 4 || echo 'Failed to set verify_threads'
 conda config --set execute_threads 4 || echo 'Failed to set execute_threads'
 conda config --set always_yes yes || echo 'Failed to set always_yes'
 conda config --set default_threads 10 || echo 'Failed to set default_threads'
+conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/main
+conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r
 
 # Check if the DAY environment already exists
 if conda env list | grep -q "^$DY_ENVNAME\s"; then
