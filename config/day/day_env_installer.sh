@@ -87,6 +87,7 @@ fi
 
 # Ensure conda is initialized
 source "$CONDA_DIR/etc/profile.d/conda.sh"
+conda config --set accept_channel_terms true
 
 # Update Conda Config
 conda config --add channels conda-forge

@@ -1,10 +1,10 @@
 import sys
 import os
 
-##### deepvariant
+##### process input dragen vcfs
 # ---------------------------
 #
- 
+  
 
 rule deepvariant_19:
     input:
