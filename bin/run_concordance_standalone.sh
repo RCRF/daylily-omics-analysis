@@ -57,15 +57,13 @@ if [[ ${#CONC_DIR} -le 6 ]]; then
 fi
 
 # --- Main processing loop ---
-for BED in "$TRUTH_DIR"/*/"$ALT_NAME.bed"; do
-    SUBD=$(basename "$(dirname "$BED")")
-    VCF="${TRUTH_DIR}/${SUBD}/${ALT_NAME}.vcf.gz"
+BED="${TRUTH_DIR}/${ALT_NAME}.bed"
+VCF="${TRUTH_DIR}/${ALT_NAME}.vcf.gz"
+SUBD="${ALT_NAME}"
 
-    if [[ ! -f "$VCF" || ! -f "$BED" ]]; then
-        echo "Missing truth files for $SUBD, skipping" >> "$LOG"
-        continue
-    fi
-
+if [[ ! -f "$VCF" || ! -f "$BED" ]]; then
+    echo "Missing truth files: $BED or $VCF, skipping" >> "$LOG"
+else
     OUT_SUBD="${CONC_DIR}/_${SUBD}"
     rm -rf "$OUT_SUBD" || true
 
@@ -73,7 +71,8 @@ for BED in "$TRUTH_DIR"/*/"$ALT_NAME.bed"; do
     FIN="python workflow/scripts/parse-vcfeval-summary.py $OUT_SUBD/summary.txt $CLUSTER_SAMPLE $BED $SUBD $ALT_NAME ${CONC_DIR}_${SUBD}/${CLUSTER_SAMPLE}_${SUBD}_summary.txt $allvar_mean_dp $ALIGNER $SNV_CALLER"
 
     echo "$CMD >> ${CONC_DIR}_a.err 2>&1; $FIN >> ${CONC_DIR}_b.err 2>&1;" >> "$FOFN"
-done
+fi
+
 
 # --- Execute commands ---
 cat "$FOFN" | bash >> "$LOG" 2>&1
