@@ -32,7 +32,8 @@ TBI="${CVCF}.tbi"
 
 # --- Derived paths ---
 SUBD="${ALT_NAME}_$(basename $TRUTH_DIR)"
-CONC_DIR="${OUT_DIR}/$(basename $CVCF)/_${SUBD}"
+CVCF_CONV=$(basename $CVCF | tr '.' '_')
+CONC_DIR="${OUT_DIR}/${CVCF_CONV}/_${SUBD}"
 
 LOG="${CONC_DIR}/${CLUSTER_SAMPLE}.${ALIGNER}.${SNV_CALLER}.concordance.log"
 FOFN="${CONC_DIR}/concordance.fofn"
@@ -72,7 +73,7 @@ else
     rm -rf "$OUT_SUBD" || true
 
    CMD="rtg vcfeval --decompose --squash-ploidy --ref-overlap -e $BED -b $VCF -c $CVCF -o $OUT_SUBD -t $SDF_PATH --threads $SUB_THREADS"
-   FIN="python workflow/scripts/parse-vcfeval-summary.py $OUT_SUBD/summary.txt $CLUSTER_SAMPLE $BED $SUBD $ALT_NAME $OUT_SUBD/${CLUSTER_SAMPLE}_${SUBD}_summary.txt $allvar_mean_dp $ALIGNER $SNV_CALLER"
+   FIN="python workflow/scripts/parse-vcfeval-summary.py $OUT_SUBD/summary.txt $CLUSTER_SAMPLE $BED $(basename $TRUTH_DIR) $ALT_NAME $OUT_SUBD/${CLUSTER_SAMPLE}_${SUBD}_summary.txt $allvar_mean_dp $ALIGNER $SNV_CALLER"
 
     echo "$CMD >> ${CONC_DIR}_a.err 2>&1; $FIN >> ${CONC_DIR}_b.err 2>&1;" >> "$FOFN"
 fi
