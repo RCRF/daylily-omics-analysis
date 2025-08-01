@@ -9,13 +9,10 @@ rule vep:
         vcfgz=MDIR
         + "{sample}/align/{alnr}/snv/{snv}/{sample}.{alnr}.{snv}.snv.sort.vcf.gz",
     output:
-        ovcfgz=MDIR
-        + "{sample}/align/{alnr}/snv/{snv}/vep/{sample}.{alnr}.{snv}.vep.vcf",
-        done=touch(MDIR
-        + "{sample}/align/{alnr}/snv/{snv}/vep/{sample}.{alnr}.{snv}.vep.done"),
+        ovcfgz=MDIR+ "{sample}/align/{alnr}/snv/{snv}/vep/{sample}.{alnr}.{snv}.vep.vcf",
+        done=MDIR + "{sample}/align/{alnr}/snv/{snv}/vep/{sample}.{alnr}.{snv}.vep.done",
     log:
-        MDIR
-        + "{sample}/align/{alnr}/snv/{snv}/vep/log/{sample}.{alnr}.{snv}.vep.log",
+        MDIR + "{sample}/align/{alnr}/snv/{snv}/vep/log/{sample}.{alnr}.{snv}.vep.log",
     threads: config["vep"]["threads"]
     resources:
         vcpu=config["vep"]["threads"],
@@ -37,12 +34,14 @@ rule vep:
          --dir {params.vep_cache} \
          -i {input.vcfgz} \
          -o {output.ovcfgz} \
-         --fasta resources/vep/{params.cluster_sample}/$(basename {params.huref}) \
+         --fasta $(realpath {params.huref}) \
          --species homo_sapiens \
          --assembly {params.genome_build} \
          --offline \
          --vcf \
          --fork 64 >> {log};
+
+	 touch {output.done};
         """
 
 
