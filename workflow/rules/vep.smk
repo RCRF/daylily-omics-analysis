@@ -37,7 +37,7 @@ rule vep:
          --dir {params.vep_cache} \
          -i {input.vcfgz} \
          -o {output.ovcfgz} \
-         --fasta resources/vep/{params.cluster_sample}/$(basename {params.huref}) \
+         --fasta $(basename {params.huref}) \
          --species homo_sapiens \
          --assembly {params.genome_build} \
          --offline \
