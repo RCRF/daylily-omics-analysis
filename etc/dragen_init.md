@@ -76,6 +76,13 @@ dragen \
   --output-directory /fsx/scratch/dragen_ref/hg38_dragen/
 
 
+
+mkdir hg38_pangenome
+cd hg38_pangenome/
+wget https://s3.us-east-1.amazonaws.com/webdata.illumina.com/downloads/software/dragen/references/genome-files/hg38-alt_masked.cnv.graph.hla.methyl_cg.rna-11-r5.0-1.tar.gz
+tar -xzvf hg38-alt_masked.cnv.graph.hla.methyl_cg.rna-11-r5.0-1.tar.gz 
+
+mkdir -p ~/analysis_results/ec2-user/
 cd ~/analysis_results/ec2-user/
 mkdir hg001
 
@@ -86,6 +93,8 @@ emacs ./dragen_ss.csv
 ## I've stored mine on my local machine in ~/.aws/dragen_creds.rtf
 
 cp $YOURLISCFILE ./dragen_lisc.rtf
+export ID=ASTRING=
+export PASSWORD=THEO(THERSTRING)
 
 
 # Run it
