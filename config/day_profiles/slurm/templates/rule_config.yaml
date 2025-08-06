@@ -410,7 +410,7 @@ sentdug:
     bench_repeat: 0
     numactl: " "
     partition: "i192,i192mem"
-    dna_scope_snv_model: "/fsx/data/cached_envs/sentieon-genomics-202503.01.rc1/bundles/SentieonUltima1.0.bundle/dnascope.model"
+    dna_scope_snv_model: "/fsx/data/cached_envs/sentieon-genomics-202503.01.rc1/bundles/SentieonUltima1.1.bundle/dnascope.model"
     mem_mb: 200000
     max_mem: "140G"
 
@@ -477,7 +477,7 @@ sentdugr:
     bench_repeat: 0
     numactl: " "
     partition: "i192mem"
-    dnascope_model: /fsx/data/cached_envs/sentieon-genomics-202503.01.rc1/bundles/SentieonUltima1.0.bundle
+    dnascope_model: /fsx/data/cached_envs/sentieon-genomics-202503.01.rc1/bundles/SentieonUltima1.1.bundle
     mem_mb: 200000
 
 sentdontr:
