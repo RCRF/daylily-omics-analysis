@@ -9,10 +9,13 @@ rule vep:
         vcfgz=MDIR
         + "{sample}/align/{alnr}/snv/{snv}/{sample}.{alnr}.{snv}.snv.sort.vcf.gz",
     output:
-        ovcfgz=MDIR+ "{sample}/align/{alnr}/snv/{snv}/vep/{sample}.{alnr}.{snv}.vep.vcf",
-        done=MDIR + "{sample}/align/{alnr}/snv/{snv}/vep/{sample}.{alnr}.{snv}.vep.done",
+        ovcfgz=MDIR
+        + "{sample}/align/{alnr}/snv/{snv}/vep/{sample}.{alnr}.{snv}.vep.vcf",
+        done=touch(MDIR
+        + "{sample}/align/{alnr}/snv/{snv}/vep/{sample}.{alnr}.{snv}.vep.done"),
     log:
-        MDIR + "{sample}/align/{alnr}/snv/{snv}/vep/log/{sample}.{alnr}.{snv}.vep.log",
+        MDIR
+        + "{sample}/align/{alnr}/snv/{snv}/vep/log/{sample}.{alnr}.{snv}.vep.log",
     threads: config["vep"]["threads"]
     resources:
         vcpu=config["vep"]["threads"],
@@ -26,22 +29,37 @@ rule vep:
     benchmark:
         MDIR + "{sample}/benchmarks/{sample}.{alnr}.{snv}.vep.bench.tsv"
     container:
-        "docker://ensemblorg/ensembl-vep:release_113.3"        
+        "docker://ensemblorg/ensembl-vep:release_114.2"        
     shell:
         """
         vep \
-         --cache \
-         --dir {params.vep_cache} \
-         -i {input.vcfgz} \
-         -o {output.ovcfgz} \
-         --fasta $(realpath {params.huref}) \
-         --species homo_sapiens \
-         --assembly {params.genome_build} \
-         --offline \
-         --vcf \
-         --fork 64 >> {log};
+        --cache \
+        --offline \
+        --format vcf \
+        --vcf \
+        --dir_cache /opt/vep/.vep/ \
+        --input_file {input.vcfgz} \
+        --output_file {output.ovcftgz} \
+        --force_overwrite --everything \
+        --hgvs \
+        --symbol \
+        --protein \
+        --freq_pop \
+        --terms \
+        --variant_class \
+        --compress_output bgzip >> {log} 2>&1;
 
-	 touch {output.done};
+        #vep \
+        # --cache \
+        # --dir {params.vep_cache} \
+        # -i {input.vcfgz} \
+        # -o {output.ovcfgz} \
+        # --fasta $(basename {params.huref}) \
+        # --species homo_sapiens \
+        # --assembly {params.genome_build} \
+        # --offline \
+        # --vcf \
+        # --fork 64 >> {log};
         """
 
 
