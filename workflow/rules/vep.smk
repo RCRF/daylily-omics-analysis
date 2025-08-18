@@ -33,13 +33,16 @@ rule vep:
     shell:
         """
         vep \
-        --cache \
+        --dir {params.vep_cache} \
         --offline \
-        --format vcf \
         --vcf \
-        --dir_cache /opt/vep/.vep/ \
+        --cache {params.vep_cache} \
         --input_file {input.vcfgz} \
-        --output_file {output.ovcftgz} \
+        --fork 64 \
+        --fasta {params.huref} \
+        --species homo_sapiens \
+        --assembly GRCh38 \
+        --output_file {output.ovcfgz} \
         --force_overwrite --everything \
         --hgvs \
         --symbol \
@@ -47,21 +50,8 @@ rule vep:
         --freq_pop \
         --terms \
         --variant_class \
-        --compress_output bgzip >> {log} 2>&1;
-
-        #vep \
-        # --cache \
-        # --dir {params.vep_cache} \
-        # -i {input.vcfgz} \
-        # -o {output.ovcfgz} \
-        # --fasta $(basename {params.huref}) \
-        # --species homo_sapiens \
-        # --assembly {params.genome_build} \
-        # --offline \
-        # --vcf \
-        # --fork 64 >> {log};
+        --compress_output bgzip >> {log} 2>&1;\
         """
-
 
 localrules:
     produce_vep,
