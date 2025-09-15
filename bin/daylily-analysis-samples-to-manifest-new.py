@@ -2,6 +2,7 @@
 import os
 import sys
 import csv
+from datetime import datetime
 import subprocess
 import requests
 from pathlib import Path
@@ -183,7 +184,9 @@ def parse_and_validate_tsv(input_file, stage_target):
                 seqplatform, libprep, "19", validate_subsample_pct(entries[0][13])
             ])
 
-    manifest_file = os.path.join(stage_target, "analysis_manifest.csv")
+    mf_timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+
+    manifest_file = os.path.join(stage_target, f"{mf_timestamp}_analysis_manifest.csv")
     tmp_manifest = manifest_file + ".tmp"
     log_warn(f"Creating manifest tmp file: {tmp_manifest}")
     generate_analysis_manifest(tmp_manifest, rows)
