@@ -200,7 +200,7 @@ def parse_and_validate_tsv(input_file, stage_target):
 def check_aws_credentials():
 
     if os.environ.get('AWS_PROFILE','unset') == 'unset':
-        log_error("AWS_PROFILE must be set to a value matching entries in the ~/.aws/config and credentials files")
+        log_error("AWS_PROFILE must be set to a value matching entries in the ~/.aws/config and credentials files. This may not be null, explicitly set default if intending to use default.")
         
     try:
         boto3.client("s3").list_buckets()
